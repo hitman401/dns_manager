@@ -1,0 +1,5 @@
+{
+  "name": "dns_manager",
+  "version": "1.0.1",
+  "main": "views/index.html"
+}

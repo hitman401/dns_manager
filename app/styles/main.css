@@ -1,0 +1,57 @@
+body {
+    font-family: "Open Sans";
+    border: 2px solid #5078A0;
+    background-color: #F0F0F0;
+}
+header {
+    height: 40px;
+    background-color: #5078A0;
+    color: white;
+    -webkit-app-region: drag;
+}
+header div.title {
+    font-weight: 100;
+    padding: 12px 10px 0px;
+}
+header ul {
+    list-style-type: none !important;
+    padding: 0px;
+    margin: 0px;
+}
+header  ul > li {
+    text-align: center;
+    float: left;
+    width: 33%;
+    height: 40px;
+    padding: 7px;
+    -webkit-app-region: no-drag;
+}
+button {
+    background-color: #5078A0;
+    color: white;
+}
+.no-pad {
+    padding: 0px;
+}
+.row-full {
+    width: 100%;
+}
+
+section {
+    position: absolute;
+    top: 40px;
+    width: 100%;
+    bottom: 0px;
+}
+
+.centered-layout {
+    padding: 10%;
+}
+
+#registration {
+    margin-top: 40px;
+}
+
+#registration p {
+    padding: 5px;
+}

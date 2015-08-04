@@ -5,40 +5,7 @@
     <link rel="stylesheet" href="../bower_components/bower-foundation5/css/normalize.css"/>
     <link rel="stylesheet" href="../bower_components/bower-foundation5/css/foundation.min.css"/>
     <link rel="stylesheet" href="../bower_components/open-sans-fontface/open-sans.css"/>
-    <style>
-        body {
-            font-family: "Open Sans";
-        }
-        header {
-          height: 40px;
-          background-color: #366097;
-          color: white;
-          -webkit-app-region: drag;
-        }
-        header div.title {
-            font-weight: 100;
-            padding: 12px 10px 0px;
-        }
-        header ul {
-            list-style-type: none !important;
-            padding: 0px;
-            margin: 0px;
-        }
-        header  ul > li {
-            text-align: center;
-            float: left;
-            width: 33%;
-            height: 40px;
-            padding: 7px;
-            -webkit-app-region: no-drag;
-        }
-        .no-pad {
-            padding: 0px;
-        }
-        .row-full {
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="../styles/main.css"/>
 </head>
 <body>
 <header>
@@ -55,24 +22,29 @@
         </div>
     </div>
 </header>
-<h1>Hello World!</h1>
-<script>
-    var gui = require('nw.gui');
-    var win = gui.Window.get();
-    var isMaximised = true;
-
-    var maximise = function() {
-        isMaximised = !isMaximised;
-        isMaximised ? win.unmaximize() : win.maximize();
-    };
-
-    var minimise = function() {
-        win.minimize();
-    };
-
-    var closeApp = function() {
-        win.close();
-    };
-</script>
+<section>
+    <div class="row-full centered-layout">
+        <div class="row">
+            <div class="column medium-8 medium-centered text-center">
+                <h4>Enter your Service and Domain Name to get started</h4>
+                <div id="registration" class="row">
+                    <div class="column medium-2 text-right"><p>SAFE:</p></div>
+                    <div class="column medium-4">
+                        <input type="text" id="service_name" placeholder="www"/>
+                    </div>
+                    <div class="column medium-6">
+                        <input type="text" id="public_name" placeholder="viv-rajkumar"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column medium-6 medium-centered">
+                        <button >Upload Files</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="application/javascript" src="../scripts/main.js"></script>
 </body>
 </html>

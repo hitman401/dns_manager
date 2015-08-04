@@ -50,7 +50,7 @@
             <ul>
                 <li onclick="minimise()">-</li>
                 <li onclick="maximise()">&#x25a1</li>
-                <li onclick="close()">X</li>
+                <li onclick="closeApp()">&nbsp;X&nbsp;</li>
             </ul>
         </div>
     </div>
@@ -61,7 +61,6 @@
     var win = gui.Window.get();
     var isMaximised = true;
 
-    // Listen to the minimize event
     var maximise = function() {
         isMaximised = !isMaximised;
         isMaximised ? win.unmaximize() : win.maximize();
@@ -71,7 +70,7 @@
         win.minimize();
     };
 
-    var close = function() {
+    var closeApp = function() {
         win.close();
     };
 </script>

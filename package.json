@@ -1,0 +1,23 @@
+{
+  "name": "dns_manager",
+  "version": "1.0.1",
+  "description": "Sample Application for demonstrating nfs and dns usage",
+  "main": "src/index.html",
+  "dependencies": {
+    "generator-nwjs": "^0.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krishnaIndia/dns_manager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krishnaIndia/dns_manager/issues"
+  },
+  "homepage": "https://github.com/krishnaIndia/dns_manager#readme"
+}

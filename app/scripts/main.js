@@ -31,29 +31,16 @@ var toggleViews = function() {
   }
 };
 
-var UploadListener = function() {
-  var holder;
+/**
+ *  Dragover and drop is disabled on document.
+ *  Read > https://github.com/nwjs/nw.js/issues/219
+ */
+document.addEventListener('dragover', function(e){
+  e.preventDefault();
+  e.stopPropagation();
+}, false);
 
-  var handler = function (e) {
-    e.preventDefault();
-    var file;
-    var filesLog = "";
-    for (var i = 0; i < e.dataTransfer.files.length; ++i) {
-      file = e.dataTransfer.files[i];
-      filesLog += (file.name + " : type - " + file.type + "\n");
-    }
-    alert(filesLog);
-    return false;
-  };
-
-  this.init = function(id) {
-    holder = document.getElementById(id);
-    holder.ondragover = function () { this.className = 'hover'; return false; };
-    holder.ondragleave = function () { this.className = ''; return false; };
-    holder.ondrop = handler;
-  };
-
-  return this;
-};
-
-UploadListener().init("drag_drop");
+document.addEventListener('drop', function(e){
+  e.preventDefault();
+  e.stopPropagation();
+}, false);

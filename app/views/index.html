@@ -52,12 +52,19 @@
                 <h4>Drag your files here to Upload</h4>
                 <div class="row">
                     <div class="column medium-6 medium-centered">
-                        <div id="drag_drop" class="upload-region">
+                        <div id="drag_drop" class="upload-region hide">
                             <div class="outer-circle">
                                 <div class="inner-circle">
                                     <div class="holder">
                                         IMG
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="progress_bar">
+                            <img src="../imgs/upload.png"/>
+                            <div class="indicator">
+                                <div class="meter">
                                 </div>
                             </div>
                         </div>
@@ -69,5 +76,6 @@
 </section>
 <script type="application/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script type="application/javascript" src="../scripts/main.js"></script>
+<script type="application/javascript" src="../scripts/file_handler.js"></script>
 </body>
 </html>

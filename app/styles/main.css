@@ -2,6 +2,7 @@ body {
     font-family: "Open Sans";
     border: 2px solid #5078A0;
     background-color: #F0F0F0;
+    -webkit-user-select: none;
 }
 header {
     height: 40px;
@@ -36,41 +37,33 @@ button {
 .row-full {
     width: 100%;
 }
-
 section {
     position: absolute;
     top: 40px;
     width: 100%;
     bottom: 0px;
 }
-
 .centered-layout {
     padding: 10%;
 }
-
 #registration {
     margin-top: 40px;
 }
-
 #registration p {
     padding: 5px;
 }
-
 .hide {
     display: none !important;
 }
-
 .upload-region {
     margin-top: 40px;
 }
-
 .outer-circle {
     width: 200px;
     height: 200px;
     border: 1px solid black;
     border-radius: 50%;
 }
-
 .inner-circle {
     margin: 35px;
     width: 130px;
@@ -78,7 +71,6 @@ section {
     border: 1px solid black;
     border-radius: 50%;
 }
-
 .inner-circle > div.holder {
     margin: 50px;
 }

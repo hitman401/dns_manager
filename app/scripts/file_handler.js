@@ -9,6 +9,15 @@ var UploadHelper = function(id) {
     completed: 0
   };
 
+  var showProgressBar = function() {
+    $('#progress_bar').removeClass('hide');
+    $('#drag_drop').addClass('hide');
+  };
+
+  var updateProgressBar = function() {
+    $('.indicator div.meter').css('width', ((ProgressStatus.completed * 100) / ProgressStatus.totalSize) + '%');
+  };
+
   var createDirectoryInNetwork = function(directoryName) {
     // TODO create container if it is not present in the root
     // Return a container object
@@ -27,6 +36,7 @@ var UploadHelper = function(id) {
       totalRead += read;
       // TODO use the data in buffer and safe the File in network
       ProgressStatus.completed += read;
+      updateProgressBar();
     }
   };
 
@@ -70,6 +80,7 @@ var UploadHelper = function(id) {
       alert('Drag and drop a directory!');
       return;
     }
+    showProgressBar();
     ProgressStatus.totalSize = computeDirectorySize(folderPath);
     uploadFiles(folderPath);
   };

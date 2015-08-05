@@ -74,3 +74,20 @@ section {
 .inner-circle > div.holder {
     margin: 50px;
 }
+
+.indicator {
+    position: absolute;
+    width: 80%;
+    margin: 15% 5%;
+    height: 10px;
+    background-color: #4166B1;
+    border-radius: 10px;
+}
+
+.meter {
+    position: absolute;
+    width: 50%;
+    height: 10px;
+    background-color: #272727;
+    border-radius: 10px;
+}

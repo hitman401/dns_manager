@@ -55,3 +55,30 @@ section {
 #registration p {
     padding: 5px;
 }
+
+.hide {
+    display: none !important;
+}
+
+.upload-region {
+    margin-top: 40px;
+}
+
+.outer-circle {
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+.inner-circle {
+    margin: 35px;
+    width: 130px;
+    height: 130px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+.inner-circle > div.holder {
+    margin: 50px;
+}

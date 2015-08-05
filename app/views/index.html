@@ -22,7 +22,7 @@
         </div>
     </div>
 </header>
-<section>
+<section id="step-1">
     <div class="row-full centered-layout">
         <div class="row">
             <div class="column medium-8 medium-centered text-center">
@@ -38,13 +38,36 @@
                 </div>
                 <div class="row">
                     <div class="column medium-6 medium-centered">
-                        <button >Upload Files</button>
+                        <button onclick="toggleViews()">Upload Files</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<section id="step-2" class="hide">
+    <div class="row-full centered-layout">
+        <div class="row">
+            <div class="column medium-8 medium-centered text-center">
+                <h4>Drag your files here to Upload</h4>
+                <div class="row">
+                    <div class="column medium-6 medium-centered">
+                        <div id="drag_drop" class="upload-region">
+                            <div class="outer-circle">
+                                <div class="inner-circle">
+                                    <div class="holder">
+                                        IMG
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="application/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script type="application/javascript" src="../scripts/main.js"></script>
 </body>
 </html>

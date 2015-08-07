@@ -1,12 +1,13 @@
 body {
     font-family: "Open Sans";
-    border: 2px solid #5078A0;
+    border: 2px solid #5081aa;
     background-color: #F0F0F0;
     -webkit-user-select: none;
+    overflow: hidden;
 }
 header {
-    height: 40px;
-    background-color: #5078A0;
+    height: 32px;
+    background-color: #5081aa;
     color: white;
     -webkit-app-region: drag;
 }
@@ -27,9 +28,13 @@ header  ul > li {
     padding: 7px;
     -webkit-app-region: no-drag;
 }
-button {
-    background-color: #5078A0;
+button, button:hover, button:focus {
+    background-color: #5081aa;
     color: white;
+}
+input {
+    height: 33px;
+    font-size: 19px;
 }
 .no-pad {
     padding: 0px;
@@ -39,42 +44,82 @@ button {
 }
 section {
     position: absolute;
-    top: 40px;
+    top: 30px;
     width: 100%;
     bottom: 0px;
 }
 .centered-layout {
     padding: 10%;
 }
-#registration {
-    margin-top: 40px;
+p.header {
+    font-size: 31px;
+    font-weight: normal;
 }
-#registration p {
-    padding: 5px;
+#registration {
+    margin: 40px auto 50px;
+}
+#registration input:focus {
+    border: 1px solid #b2b2b2;
+}
+#registration input:focus {
+    border: 1px solid #5081aa;
+}
+#registration span.scheme {
+    display: inherit;
+    margin: 10px auto;
+    font-weight: 600;
+}
+#registration input#service_name {
+    width: calc(100% - 20px);
+    margin: 0px 0px 0px 10px;
+}
+#registration input#public_name {
+    width: calc(100% - 10px);
+    margin: 0px 20px;
+}
+#registration span.dot {
+    display: inherit;
+    width: 5px;
+    float: left;
+    margin: 5px 0px 0px;
+    font-weight: bold;
+    font-size: 30px;
 }
 .hide {
     display: none !important;
 }
 .upload-region {
     margin-top: 40px;
+    width: 175px;
+}
+@-webkit-keyframes pulse {
+    0%   {border-width: 1px;}
+    100% {border-width: 2px;}
 }
 .outer-circle {
-    width: 200px;
-    height: 200px;
-    border: 1px solid black;
+    width: 150px;
+    height: 150px;
+    border: 1px solid #5081aa;
     border-radius: 50%;
+    /*-webkit-animation-name: pulse;*/
+    /*-webkit-animation-duration: 1s;*/
+    /*-webkit-animation-iteration-count: infinite;*/
 }
 .inner-circle {
-    margin: 35px;
-    width: 130px;
-    height: 130px;
-    border: 1px solid black;
+    margin: 25px;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #5081aa;
     border-radius: 50%;
+    /*-webkit-animation-name: pulse;*/
+    /*-webkit-animation-duration: 1s;*/
+    /*-webkit-animation-direction: reverse;*/
+    /*-webkit-animation-iteration-count: infinite;*/
 }
 .inner-circle > div.holder {
-    margin: 50px;
+    width: 66px;
+    margin: 16px;
 }
-
 .indicator {
     position: absolute;
     width: 80%;
@@ -83,11 +128,31 @@ section {
     background-color: #4166B1;
     border-radius: 10px;
 }
-
 .meter {
     position: absolute;
     width: 50%;
     height: 10px;
     background-color: #272727;
     border-radius: 10px;
+}
+.error {
+    position: fixed;
+    display: none;
+}
+
+.error .arrow {
+    margin: 0 0 0 10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #ff7676;
+}
+
+.error .error-msg {
+    padding: 8px;
+    height: 33px;
+    font-size: 14px;
+    background-color: #ff7676;
+    color: #fff;
 }

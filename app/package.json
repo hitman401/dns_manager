@@ -4,7 +4,7 @@
   "private": true,
   "main": "views/index.html",
   "window": {
-    "frame": false,
+    "frame": true,
     "toolbar": false,
     "position": "center",
     "width": 800,

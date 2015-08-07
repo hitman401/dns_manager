@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello World!</title>
+    <title>Safe Network Uploader</title>
     <link rel="stylesheet" href="../bower_components/bower-foundation5/css/normalize.css"/>
     <link rel="stylesheet" href="../bower_components/bower-foundation5/css/foundation.min.css"/>
     <link rel="stylesheet" href="../bower_components/open-sans-fontface/open-sans.css"/>
@@ -11,7 +11,7 @@
 <header>
     <div class="row-full">
         <div class="column medium-3 title">
-            SAFE-DNS manager
+            SAFE Network Uploader
         </div>
         <div class="column medium-2 no-pad">
             <ul>
@@ -25,20 +25,26 @@
 <section id="step-1">
     <div class="row-full centered-layout">
         <div class="row">
-            <div class="column medium-8 medium-centered text-center">
-                <h4>Enter your Service and Domain Name to get started</h4>
+            <div class="column medium-9 medium-centered text-center">
+                <p class="header">Enter your Service and Domain Name to get started</p>
+                <p class="description">Service name can be www, blog, etc. followed by the public name. Eg, safe:www.maidsafe</p>
                 <div id="registration" class="row">
-                    <div class="column medium-2 text-right"><p>SAFE:</p></div>
-                    <div class="column medium-4">
-                        <input type="text" id="service_name" placeholder="www"/>
-                    </div>
-                    <div class="column medium-6">
-                        <input type="text" id="public_name" placeholder="viv-rajkumar"/>
+                    <div class="column medium-9 medium-centered">
+                        <div class="column medium-2">
+                            <span class="scheme">safe:</span>
+                        </div>
+                        <div class="column medium-4 no-pad">
+                            <input type="text" id="service_name" placeholder="www" required="true"/>
+                        </div>
+                        <div class="column medium-6 no-pad">
+                            <span class="dot">.</span>
+                            <input type="text" id="public_name" placeholder="maidsafe" required="true"/>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="column medium-6 medium-centered">
-                        <button onclick="toggleViews()">Upload Files</button>
+                        <button onclick="register()">Upload Files</button>
                     </div>
                 </div>
             </div>
@@ -48,15 +54,17 @@
 <section id="step-2" class="hide">
     <div class="row-full centered-layout">
         <div class="row">
-            <div class="column medium-8 medium-centered text-center">
-                <h4>Drag your files here to Upload</h4>
+            <div class="column medium-10 medium-centered text-center">
                 <div class="row">
-                    <div class="column medium-6 medium-centered">
-                        <div id="drag_drop" class="upload-region">
+                    <div class="row text-center">
+                        <p class="header">Drag your files here to Upload</p>
+                    </div>
+                    <div class="column medium-3 medium-centered upload-region">
+                        <div id="drag_drop">
                             <div class="outer-circle">
                                 <div class="inner-circle">
                                     <div class="holder">
-                                        IMG
+                                        <img src="../imgs/upload_static.png"/>
                                     </div>
                                 </div>
                             </div>
@@ -77,5 +85,12 @@
 <script type="application/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script type="application/javascript" src="../scripts/main.js"></script>
 <script type="application/javascript" src="../scripts/file_handler.js"></script>
+<div class="error">
+    <div class="arrow">
+    </div>
+    <div class="error-msg">
+        MSGSGSGSG
+    </div>
+</div>
 </body>
 </html>

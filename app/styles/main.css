@@ -122,18 +122,19 @@ p.header {
 }
 .indicator {
     position: absolute;
-    width: 80%;
-    margin: 15% 5%;
-    height: 10px;
+    width: 158px;
+    margin: 15% 0%;
+    height: 8px;
     background-color: #4166B1;
     border-radius: 10px;
 }
 .meter {
     position: absolute;
-    width: 50%;
-    height: 10px;
-    background-color: #272727;
+    width: 0px;
+    height: 4px;
+    background-color: white;
     border-radius: 10px;
+    margin: 2px 4px;
 }
 .error {
     position: fixed;

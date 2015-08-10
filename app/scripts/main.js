@@ -49,18 +49,22 @@ var register = function() {
   if(!validate()) {
     return;
   }
-  toggleViews();
+  showSection('step-2');
 };
 
-var toggleViews = function() {
-  var step_1 = $('#step-1');
-  var step_2 = $('#step-2');
-  if (step_1.hasClass('hide')) {
-    step_2.addClass('hide');
-    step_1.removeClass('hide');
-  } else {
-    step_1.addClass('hide');
-    step_2.removeClass('hide');
+var showSection = function(id) {
+  var tmp;
+  var hideClass = 'hide';
+  var sections = ['step-1', 'step-2', 'step-3'];
+  for (var i in sections) {
+    if (sections[i] === id) {
+      $('#' + sections[i]).removeClass(hideClass);
+      continue;
+    }
+    tmp = $('#' + sections[i]);
+    if (!tmp.hasClass(hideClass)) {
+      tmp.addClass(hideClass);
+    }
   }
 };
 
@@ -82,4 +86,3 @@ document.addEventListener('drop', function(e){
   e.preventDefault();
   e.stopPropagation();
 }, false);
-

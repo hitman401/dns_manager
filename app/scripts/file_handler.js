@@ -9,13 +9,8 @@ var UploadHelper = function(id) {
     completed: 0
   };
 
-  var showProgressBar = function() {
-    $('#progress_bar').removeClass('hide');
-    $('#drag_drop').addClass('hide');
-  };
-
   var updateProgressBar = function() {
-    $('.indicator div.meter').css('width', ((ProgressStatus.completed * 100) / ProgressStatus.totalSize) + '%');
+    $('.indicator div.meter').css('width', (1.5 * (ProgressStatus.completed * 100) / ProgressStatus.totalSize) + 'px');
   };
 
   var createDirectoryInNetwork = function(directoryName) {
@@ -32,7 +27,7 @@ var UploadHelper = function(id) {
     var read;
     while (totalRead < size) {
       buffer = new Buffer(5000);
-      read = fs.readSync(fd, buffer, 0, 5000, read);
+      read = fs.readSync(fd, buffer, 0, 5000, totalRead);
       totalRead += read;
       // TODO use the data in buffer and safe the File in network
       ProgressStatus.completed += read;
@@ -80,7 +75,7 @@ var UploadHelper = function(id) {
       alert('Drag and drop a directory!');
       return;
     }
-    showProgressBar();
+    window.showSection('step-3');
     ProgressStatus.totalSize = computeDirectorySize(folderPath);
     uploadFiles(folderPath);
   };

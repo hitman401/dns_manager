@@ -4,14 +4,12 @@ var UploadHelper = function(id) {
   var mime = require('mime');
 
   var ffi = require('ffi');
-  //var ref = require('ref');
 
-  var safeApi = {};
-  //ffi.Library(path.join(__dirname, 'safe_ffi'), {
-  //  'create_sub_directory': ['int', ['string', 'bool']],
-  //  'create_file': ['int', ['string', 'string']],
-  //  'register_dns': ['int', ['string', 'string', 'string']]
-  //});
+  var safeApi = ffi.Library(path.join(__dirname, 'safe_ffi'), {
+    'create_sub_directory': ['int', ['string', 'bool']],
+    'create_file': ['int', ['string', 'string']],
+    'register_dns': ['int', ['string', 'string', 'string']]
+  });
 
   var holder;
   var ProgressStatus = {
@@ -24,20 +22,20 @@ var UploadHelper = function(id) {
   };
 
   var createDirectoryInNetwork = function(directoryPath) {
-    //var errorCode = safeApi.create_sub_directory(directoryPath);
-    //if (errorCode > 0) {
-    //  throw 'Failed to create Directory ' + directoryPath + 'with error code :' + errorCode;
-    //}
+    var errorCode = safeApi.create_sub_directory(directoryPath);
+    if (errorCode > 0) {
+      throw 'Failed to create Directory ' + directoryPath + 'with error code :' + errorCode;
+    }
   };
 
   var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size) {
     var fd = fs.openSync(path.join(localDirectory, fileName), 'r');
     var buffer = new Buffer(size);
     var read = fs.readSync(fd, buffer, 0, size, 0);
-    //var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer.toString());
-    //if (errorCode > 0) {
-    //  throw 'Failed to create file ' + directoryPath + '/' + fileName + 'with error code :' + errorCode;
-    //}
+    var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer.toString());
+    if (errorCode > 0) {
+      throw 'Failed to create file ' + directoryPath + '/' + fileName + 'with error code :' + errorCode;
+    }
     ProgressStatus.completed += read;
     updateProgressBar();
   };

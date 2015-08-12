@@ -3,6 +3,16 @@ var UploadHelper = function(id) {
   var path = require('path');
   var mime = require('mime');
 
+  var ffi = require('ffi');
+  //var ref = require('ref');
+
+  var safeApi = {};
+  //ffi.Library(path.join(__dirname, 'safe_ffi'), {
+  //  'create_sub_directory': ['int', ['string', 'bool']],
+  //  'create_file': ['int', ['string', 'string']],
+  //  'register_dns': ['int', ['string', 'string', 'string']]
+  //});
+
   var holder;
   var ProgressStatus = {
     totalSize: 0,
@@ -13,26 +23,23 @@ var UploadHelper = function(id) {
     $('.indicator div.meter').css('width', (1.5 * (ProgressStatus.completed * 100) / ProgressStatus.totalSize) + 'px');
   };
 
-  var createDirectoryInNetwork = function(directoryName) {
-    // TODO create container if it is not present in the root
-    // Return a container object
-    console.log("Directory Created: " + directoryName);
+  var createDirectoryInNetwork = function(directoryPath) {
+    //var errorCode = safeApi.create_sub_directory(directoryPath);
+    //if (errorCode > 0) {
+    //  throw 'Failed to create Directory ' + directoryPath + 'with error code :' + errorCode;
+    //}
   };
 
-  var writeFileToNetwork = function(parentDirectory, fileName, size) {
-    console.log("Creating file: " + mime.lookup(fileName) + " in " + parentDirectory);
-    var fd = fs.openSync(path.join(parentDirectory, fileName), 'r');
-    var buffer;
-    var totalRead = 0;
-    var read;
-    while (totalRead < size) {
-      buffer = new Buffer(5000);
-      read = fs.readSync(fd, buffer, 0, 5000, totalRead);
-      totalRead += read;
-      // TODO use the data in buffer and safe the File in network
-      ProgressStatus.completed += read;
-      updateProgressBar();
-    }
+  var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size) {
+    var fd = fs.openSync(path.join(localDirectory, fileName), 'r');
+    var buffer = new Buffer(size);
+    var read = fs.readSync(fd, buffer, 0, size, 0);
+    //var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer.toString());
+    //if (errorCode > 0) {
+    //  throw 'Failed to create file ' + directoryPath + '/' + fileName + 'with error code :' + errorCode;
+    //}
+    ProgressStatus.completed += read;
+    updateProgressBar();
   };
 
   var computeDirectorySize = function(folderPath) {
@@ -52,18 +59,22 @@ var UploadHelper = function(id) {
     return size;
   };
 
-  var uploadFiles = function(folderPath) {
+  var uploadFiles = function(folderPath, networkDirectoryPath) {
     var stats;
     var size = 0;
-    createDirectoryInNetwork(path.basename(folderPath));
+    if(!networkDirectoryPath) {
+      networkDirectoryPath = path.basename(folderPath);
+      createDirectoryInNetwork(networkDirectoryPath);
+    }
     var dirContents = fs.readdirSync(folderPath);
     for (var index in dirContents) {
       stats = fs.statSync(path.join(folderPath, dirContents[index]));
       if (stats.isDirectory()) {
-        createDirectoryInNetwork(path.join(folderPath, dirContents[index]));
-        uploadFiles(path.join(folderPath, dirContents[index]));
+        var networkPath = networkDirectoryPath + '/' + dirContents[index];
+        createDirectoryInNetwork(networkPath);
+        uploadFiles(path.join(folderPath, dirContents[index]), networkPath);
       } else {
-        writeFileToNetwork(folderPath, dirContents[index], stats.size);
+        writeFileToNetwork(folderPath, networkDirectoryPath, dirContents[index], stats.size);
       }
     }
     return size;
@@ -77,7 +88,11 @@ var UploadHelper = function(id) {
     }
     window.showSection('step-3');
     ProgressStatus.totalSize = computeDirectorySize(folderPath);
-    uploadFiles(folderPath);
+    try {
+      uploadFiles(folderPath);
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   var dropHandler = function (e) {
@@ -96,4 +111,4 @@ var UploadHelper = function(id) {
   return this;
 };
 
-UploadHelper("drag_drop");
+UploadHelper('drag_drop');

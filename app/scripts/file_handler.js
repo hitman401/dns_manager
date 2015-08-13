@@ -30,14 +30,13 @@ var UploadHelper = function(id) {
   };
 
   var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size) {
-    var fd = fs.openSync(path.join(localDirectory, fileName), 'r');
-    var buffer = new Buffer(size);
-    var read = fs.readSync(fd, buffer, 0, size, 0);
+    console.log("Creating file %s in %s", fileName, networkDirectory);
+    var buffer = fs.readFileSync(path.join(localDirectory, fileName));
     //var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer.toString());
     //if (errorCode > 0) {
     //  throw 'Failed to create file ' + directoryPath + '/' + fileName + 'with error code :' + errorCode;
     //}
-    ProgressStatus.completed += read;
+    ProgressStatus.completed += size;
     updateProgressBar();
   };
 
@@ -103,10 +102,14 @@ var UploadHelper = function(id) {
     return false;
   };
 
-  holder = document.getElementById(id);
-  holder.ondragover = function () { this.className = 'hover'; return false; };
-  holder.ondragleave = function () { this.className = ''; return false; };
-  holder.ondrop = dropHandler;
+  if (id) {
+    holder = document.getElementById(id);
+    holder.ondragover = function () { this.className = 'hover'; return false; };
+    holder.ondragleave = function () { this.className = ''; return false; };
+    holder.ondrop = dropHandler;
+  }
+  this.uploadFolder = uploadFolder;
+  
   return this;
 };
 

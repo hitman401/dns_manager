@@ -80,7 +80,7 @@
             <div class="row">
                 <div class="column medium-12 text-center">
                     <p class="header">Use a template to create a Site</p>
-                    <button class="btn_template">Use Template</button>
+                    <button class="btn_template" onclick="showSection('template')">Use Template</button>
                 </div>
             </div>
         </div>
@@ -112,6 +112,30 @@
                 </div>
             </div>
         </div>
+    </div>
+</section>
+<section id="template" class="hide">
+    <div class="row-full template_banner">
+        <p id="template_title" onclick="editTemplateTitle()">
+            My Page
+        </p>
+        <div id="edit_template_title" class="column medium-centered medium-4 hide">
+            <input id="template_title_input" type="text" value="MyPage" onchange="updateTemplateTitle(this.value)"/>
+        </div>
+    </div>
+    <div class="row-full template_content">
+        <p id="template_content" onclick="editTemplateContent()">
+            This page is created and published on the SAFE Network using the SAFE Uploader
+        </p>
+        <div id="edit_template_content" class="column medium-centered medium-10 hide">
+            <input id="template_content_input" type="text"
+                   value="This page is created and published on the SAFE Network using the SAFE Uploader"
+                   onchange="updateTemplateContent(this.value)"/>
+        </div>
+    </div>
+    <div class="template_footer">
+        <div onclick="resetTemplate();showSection('step-2');">START OVER</div>
+        <div onclick="publishTemplate()">PUBLISH</div>
     </div>
 </section>
 <script type="application/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>

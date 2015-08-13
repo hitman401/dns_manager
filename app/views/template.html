@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Template Generated Site</title>
+    <link type="text/css" rel="stylesheet" href="normalize.css"/>
+    <link type="text/css" rel="stylesheet" href="foundation.css"/>
+    <style>
+        body {
+            background-color: #F0F0F0;
+            -webkit-user-select: none;
+            overflow: hidden;
+        }
+        .template_banner {
+            height: 50%;
+            background: url("bg.jpg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            padding: 0;
+            margin: 0;
+        }
+        .template_banner p {
+            font-size: 20px;
+            font-weight: bolder;
+            text-align: center;
+            color: white;
+            padding: 25px;
+        }
+
+        .template_content {
+            height: 50%;
+            padding: 5%;
+        }
+        .template_content p {
+            font-size: 25px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="row-full template_banner">
+        <p>
+            %s
+        </p>
+    </div>
+    <div class="row-full template_content">
+        <p>
+            %s
+        </p>
+    </div>
+</body>
+</html>

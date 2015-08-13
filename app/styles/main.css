@@ -88,9 +88,8 @@ p.header {
 .hide {
     display: none !important;
 }
-.upload-region {
+button.btn_template {
     margin-top: 40px;
-    width: 175px;
 }
 @-webkit-keyframes pulse {
     0%   {border-width: 1px;}
@@ -106,7 +105,7 @@ p.header {
     /*-webkit-animation-iteration-count: infinite;*/
 }
 .inner-circle {
-    margin: 25px;
+    margin: 24px;
     width: 100px;
     height: 100px;
     border: 2px solid #5081aa;
@@ -120,10 +119,17 @@ p.header {
     width: 66px;
     margin: 16px;
 }
+.inner-circle > div.holder > img {
+    content: url("../imgs/upload_static.png");
+}
+.inner-circle > div.holder:hover > img {
+    content: url("../imgs/upload_drag_hover.png");
+}
 .indicator {
     position: absolute;
-    width: 158px;
-    margin: 15% 0%;
+    width: 100%;
+    margin-top: 10%;
+    left: 0px;
     height: 8px;
     background-color: #4166B1;
     border-radius: 10px;
@@ -134,7 +140,7 @@ p.header {
     height: 4px;
     background-color: white;
     border-radius: 10px;
-    margin: 2px 4px;
+    margin: 2px -13px;
 }
 .error {
     position: fixed;

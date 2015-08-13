@@ -55,8 +55,10 @@ var register = function() {
 var showSection = function(id) {
   var tmp;
   var hideClass = 'hide';
-  // TODO use data- or selection to select sections
-  var sections = ['step-1', 'step-2', 'step-3', 'template'];
+  var sections = [];
+  $('section').map(function(i, e) {
+    sections.push(e.getAttribute('id'));
+  });
   for (var i in sections) {
     if (sections[i] === id) {
       $('#' + sections[i]).removeClass(hideClass);
@@ -133,7 +135,7 @@ var publishTemplate = function() {
   var content = $('#template_content_input').val();
   var fs = require('fs');
   var util = require('util');
-  //var path = require('path');
+
   var templateString = fs.readFileSync("./views/template.html").toString();
 
   if (!fs.existsSync('./template')) {

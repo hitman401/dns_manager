@@ -37,19 +37,22 @@ input {
     font-size: 19px;
 }
 .no-pad {
-    padding: 0px;
+    padding: 0;
 }
 .row-full {
     width: 100%;
 }
 section {
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 100%;
-    bottom: 0px;
+    bottom: 0;
 }
 .centered-layout {
     padding: 10%;
+}
+.margin-25-vertical {
+    margin: 25px 0;
 }
 p.header {
     font-size: 31px;

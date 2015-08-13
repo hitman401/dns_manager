@@ -138,6 +138,54 @@
         <div onclick="publishTemplate()">PUBLISH</div>
     </div>
 </section>
+<section id="success" class="hide">
+    <div class="row-full centered-layout">
+        <div class="row">
+            <div class="column medium-10 medium-centered text-center">
+                <div class="row">
+                    <div class="row text-center">
+                        <p class="header">Files Uploaded!</p>
+                    </div>
+                    <div class="row">
+                        <div class="column medium-2 medium-centered text-center">
+                            <img src="../imgs/success.png">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column medium-12 medium-centered text-center">
+                            <p class="margin-25-vertical">Drag more files to upload again</p>
+                            <button onclick="showSection('step-2')">Start Over</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="failure" class="hide">
+    <div class="row-full centered-layout">
+        <div class="row">
+            <div class="column medium-10 medium-centered text-center">
+                <div class="row">
+                    <div class="row text-center">
+                        <p class="header">Oops, Something went wrong!</p>
+                    </div>
+                    <div class="row">
+                        <div class="column medium-2 medium-centered text-center">
+                            <img src="../imgs/error.png">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column medium-12 medium-centered text-center">
+                            <p class="margin-25-vertical">Try to upload again</p>
+                            <button onclick="showSection('step-2')">Start Over</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <script type="application/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script type="application/javascript" src="../scripts/main.js"></script>
 <script type="application/javascript" src="../scripts/file_handler.js"></script>

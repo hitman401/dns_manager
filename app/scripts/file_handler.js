@@ -4,7 +4,7 @@ var UploadHelper = function(id) {
   var mime = require('mime');
   //
   //var ffi = require('ffi');
-  //
+
   //var safeApi = ffi.Library(path.join(__dirname, 'safe_ffi'), {
   //  'create_sub_directory': ['int', ['string', 'bool']],
   //  'create_file': ['int', ['string', 'string']],
@@ -88,8 +88,10 @@ var UploadHelper = function(id) {
     ProgressStatus.totalSize = computeDirectorySize(folderPath);
     try {
       uploadFiles(folderPath);
+      window.showSection('success');
     } catch(e) {
       console.error(e);
+      window.showSection('failure');
     }
   };
 
@@ -109,7 +111,7 @@ var UploadHelper = function(id) {
     holder.ondrop = dropHandler;
   }
   this.uploadFolder = uploadFolder;
-  
+
   return this;
 };
 

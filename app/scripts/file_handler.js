@@ -19,13 +19,13 @@ var UploadHelper = function(id) {
     }
   };
 
-  //TODO verify files names on OSX and Linux
+  //TODO verify files names on OSX
   var getLibraryFileName = function() {
     var fileName;
     if (/^win/.test(process.platform)) { // Windows
       fileName = 'safe_ffi.dll';
     } else if (/^darwin/.test(process.platform)) { // OSX
-      fileName = 'safe_ffi.dylib';
+      fileName = 'libsafe_ffi.dylib';
     } else{ // LINUX
       fileName = 'libsafe_ffi.so';
     }

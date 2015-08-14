@@ -55,14 +55,16 @@ section {
     margin: 25px 0;
 }
 p.header {
-    font-size: 31px;
-    font-weight: normal;
+    font: normal normal 400 31px/37px 'Open Sans';
+}
+p.description {
+    font: normal normal normal 18px/22px 'Open Sans';
 }
 #registration {
     margin: 40px auto 50px;
 }
-#registration input:focus {
-    border: 1px solid #b2b2b2;
+#registration input {
+    font: normal normal normal 19px 'Open Sans';
 }
 #registration input:focus {
     border: 1px solid #5081aa;

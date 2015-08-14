@@ -7,7 +7,7 @@ grunt.loadNpmTasks('grunt-exec');
 grunt.initConfig({
   nwjs: {
     options: {
-      platforms: ['win','osx', 'linux'],
+      platforms: ['win'],//,'osx', 'linux'],
       buildDir: './dist', // Where the build version of my NW.js app is saved
     },
     src: ['./app/**'] // Your NW.js app
@@ -35,6 +35,6 @@ grunt.initConfig({
   }
 });
 
-grunt.registerTask("init", ["exec:install_build_dependencies", "exec:install_app_dependencies"]);
+grunt.registerTask("install", ["exec:install_build_dependencies", "exec:install_app_dependencies"]);
 
-grunt.registerTask("build", ["nwjs", "exec:package_windows_32", "exec:package_windows_64"]);
+grunt.registerTask("build", ["nwjs"]);//, "exec:package_windows_32", "exec:package_windows_64"]);

@@ -1,24 +1,9 @@
-var gui = require('nw.gui');
-var win = gui.Window.get();
-var package_config = require('../package.json');
+var remote = require('remote');
+var Menu = remote.require('menu');
+window.$ = window.jQuery = require('../bower_components/jquery/dist/jquery.min.js');
 
-// Info related to the UI can be added to the windowState
-var windowState = {
-    isMaximised: true
-};
-
-var maximise = function() {
-  windowState.isMaximised = !windowState.isMaximised;
-  windowState.isMaximised ? win.unmaximize() : win.maximize();
-};
-
-var minimise = function() {
-  win.minimize();
-};
-
-var closeApp = function() {
-  win.close();
-};
+// Disable Menu bar
+Menu.setApplicationMenu(null);
 
 var showError = function(id, msg) {
   var pos = $('#' + id).offset();
@@ -71,10 +56,10 @@ var showSection = function(id) {
   }
 };
 
-if (package_config.window.frame) {
+//if (package_config.window.frame) {
   $('header').remove();
   $('body').css('border-width', '0px');
-}
+//}
 
 /**
  *  Dragover and drop is disabled on document.
@@ -136,18 +121,18 @@ var publishTemplate = function() {
   var fs = require('fs');
   var util = require('util');
 
-  var templateString = fs.readFileSync("./views/template.html").toString();
+  var templateString = fs.readFileSync("./src/views/template.html").toString();
 
   if (!fs.existsSync('./template')) {
     fs.mkdirSync('./template');
   }
   fs.writeFileSync('./template/index.html', util.format(templateString, title, content));
 
-  var buff = fs.readFileSync('./imgs/phone_purple.jpg');
+  var buff = fs.readFileSync('./src/imgs/phone_purple.jpg');
   fs.writeFileSync('./template/bg.jpg', buff);
-  var buff = fs.readFileSync('./bower_components/bower-foundation5/css/normalize.css');
+  var buff = fs.readFileSync('./src/bower_components/bower-foundation5/css/normalize.css');
   fs.writeFileSync('./template/normalize.css', buff);
-  var buff = fs.readFileSync('./bower_components/bower-foundation5/css/foundation.css');
+  var buff = fs.readFileSync('./src/bower_components/bower-foundation5/css/foundation.css');
   fs.writeFileSync('./template/foundation.css', buff);
   resetTemplate();
   showSection('step-3');

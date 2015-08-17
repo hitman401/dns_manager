@@ -15,7 +15,8 @@ function createMainWindow () {
 		center: true,
 		resizable: true,
 		'min-width': 1000,
-		'min-height': 600
+		'min-height': 600,
+		icon: './src/imgs/logo.png'
 	});
 
 	win.loadUrl(`file://${__dirname}/src/views/index.html`);
@@ -47,5 +48,5 @@ app.on('activate-with-no-open-windows', function () {
 
 app.on('ready', function () {
 	mainWindow = createMainWindow();
-	mainWindow.openDevTools();
+	//mainWindow.openDevTools();
 });

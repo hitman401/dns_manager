@@ -1,3 +1,4 @@
 node_modules
 /.idea
 /src/bower_components
+/template

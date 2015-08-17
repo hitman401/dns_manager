@@ -17,11 +17,11 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-packager . $npm_package_productName --out=dist --ignore=dist --prune --asar --all --version=0.30.0",
-    "build-win": "electron-packager . $npm_package_productName --out=dist --ignore=dist --prune --asar --platform=win32 --arch=64 --version=0.30.0"
+    "build-win": "electron-packager . $npm_package_productName --out=dist --ignore=dist --prune --asar --platform=win32 --arch=x64 --version=0.30.0"
   },
   "files": [
     "index.js",
-    "src/**"
+    "src"
   ],
   "keywords": [
     "electron-app"

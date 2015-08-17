@@ -4,10 +4,10 @@ var UploadHelper = function(id) {
   var fs = require('fs');
   var path = require('path');
   var mime = require('mime');
-  //var ffi = require('ffi');
-  //var ref = require('ref');
-  //var ArrayType = require('ref-array');
-  //var IntArray = ArrayType(ref.types.int);
+  var ffi = require('ffi');
+  var ref = require('ref');
+  var ArrayType = require('ref-array');
+  var IntArray = ArrayType(ref.types.int);
   var holder;
 
   var ProgressHandler = function(totalSize, callback) {
@@ -32,7 +32,7 @@ var UploadHelper = function(id) {
   var getLibraryFileName = function() {
     var fileName;
     if (/^win/.test(process.platform)) { // Windows
-      fileName = 'safe_ffi.dll';
+      fileName = './src/safe_ffi.dll';
     } else if (/^darwin/.test(process.platform)) { // OSX
       fileName = 'libsafe_ffi.dylib';
     } else { // LINUX
@@ -42,37 +42,35 @@ var UploadHelper = function(id) {
   };
 
   var initSafeApi = function() {
-    //safeApi = ffi.Library(getLibraryFileName(), {
-    //  'create_sub_directory': ['int', ['string', 'bool']],
-    //  'create_file': ['int', ['string', IntArray, 'int']],
-    //  'register_dns': ['int', ['string', 'string', 'string']]
-    //});
+    safeApi = ffi.Library(getLibraryFileName(), {
+      'create_sub_directory': ['int', ['string', 'bool']],
+      'create_file': ['int', ['string', IntArray, 'int']],
+      'register_dns': ['int', ['string', 'string', 'string']]
+    });
   };
 
   var createDirectoryInNetwork = function(directoryPath, callback) {
     setTimeout(function() {
       console.log('Creating directory ' + directoryPath);
-      //var errorCode = safeApi.create_sub_directory(directoryPath, false);
-      //if (errorCode > 0) {
-      //  callback(errorCode);
-      //} else {
-      //  callback(null, errorCode);
-      //}
-      callback();
+      var errorCode = safeApi.create_sub_directory(directoryPath, false);
+      if (errorCode > 0) {
+        callback(errorCode);
+      } else {
+        callback(null, errorCode);
+      }
     }, 0);
   };
 
   var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size, handler) {
     setTimeout(function() {
       console.log("Creating file %s in %s", fileName, networkDirectory);
-      //var buffer = fs.readFileSync(path.join(localDirectory, fileName));
-      //var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer, size);
-      //if (errorCode > 0) {
-      //  handler.update(errorCode);
-      //} else {
+      var buffer = fs.readFileSync(path.join(localDirectory, fileName));
+      var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer, size);
+      if (errorCode > 0) {
+        handler.update(errorCode);
+      } else {
         handler.update(null, size);
-      //}
-      callback();
+      }
     }, 0);
   };
 
@@ -138,10 +136,10 @@ var UploadHelper = function(id) {
           showSection('failure');
         }
         setTimeout(function() {
-          //var errorCode = safeApi.register_dns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath));
-          //if (errorCode > 0) {
-          //  showSection('failure');
-          //}
+          var errorCode = safeApi.register_dns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath));
+          if (errorCode > 0) {
+            showSection('failure');
+          }
           console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
           window.showSection('success');
         }, 0);

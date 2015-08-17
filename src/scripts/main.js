@@ -1,6 +1,8 @@
 var remote = require('remote');
 var Menu = remote.require('menu');
-window.$ = window.jQuery = require('../bower_components/jquery/dist/jquery.min.js');
+// TODO fetch from bower components itself
+window.$ = window.jQuery = require('../scripts/jquery.js');
+
 
 // Disable Menu bar
 Menu.setApplicationMenu(null);

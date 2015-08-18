@@ -1,12 +1,16 @@
 'use strict';
 const app = require('app');
 const BrowserWindow = require('browser-window');
+var path = require('path');
 
 // report crashes to the Electron project
 require('crash-reporter').start();
 
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
+
+console.log(__dirname);
+var srcFolder = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, 'src/');
 
 function createMainWindow () {
 	const win = new BrowserWindow({
@@ -16,7 +20,7 @@ function createMainWindow () {
 		resizable: true,
 		'min-width': 1000,
 		'min-height': 600,
-		icon: './src/imgs/logo.png'
+		icon: srcFolder + '/imgs/logo.png'
 	});
 
 	win.loadUrl(`file://${__dirname}/src/views/index.html`);

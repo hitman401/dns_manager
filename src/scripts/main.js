@@ -118,23 +118,25 @@ var resetTemplate = function() {
 
 
 var publishTemplate = function() {
+  var path = require('path');
+
   var title = $('#template_title_input').val();
   var content = $('#template_content_input').val();
   var fs = require('fs');
   var util = require('util');
 
-  var templateString = fs.readFileSync("./src/views/template.html").toString();
-
+  var root = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
+  var templateString = fs.readFileSync(path.resolve(root, 'views/template.html')).toString();
   if (!fs.existsSync('./template')) {
     fs.mkdirSync('./template');
   }
   fs.writeFileSync('./template/index.html', util.format(templateString, title, content));
 
-  var buff = fs.readFileSync('./src/imgs/phone_purple.jpg');
+  var buff = fs.readFileSync(path.resolve(root, 'imgs/phone_purple.jpg'));
   fs.writeFileSync('./template/bg.jpg', buff);
-  var buff = fs.readFileSync('./src/bower_components/bower-foundation5/css/normalize.css');
+  var buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/normalize.css'));
   fs.writeFileSync('./template/normalize.css', buff);
-  var buff = fs.readFileSync('./src/bower_components/bower-foundation5/css/foundation.css');
+  var buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/foundation.css'));
   fs.writeFileSync('./template/foundation.css', buff);
   resetTemplate();
   showSection('step-3');

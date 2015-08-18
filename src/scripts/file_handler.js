@@ -141,7 +141,7 @@ var UploadHelper = function(id) {
             showSection('failure');
           }
           console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
-          window.showSection('success');
+          showSection('success');
         }, 0);
       });
       handler.update(null, 0);

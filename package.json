@@ -2,13 +2,13 @@
   "name": "safe_network_uploader",
   "productName": "Safe Network Uploader",
   "version": "0.0.0",
-  "description": "My awesome app",
+  "description": "Safe Network Uploader - Example Application",
   "license": "MIT",
   "main": "index.js",
   "repository": "krishnaIndia/dns_manager",
   "author": {
     "name": "krishna",
-    "email": "krishnaof1988@gmail.com",
+    "email": "krishna.kumar@maidsafe.net",
     "url": "maidsafe.net"
   },
   "engines": {
@@ -16,8 +16,10 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . $npm_package_productName --out=dist --ignore=dist --prune --asar --all --version=0.30.0",
-    "build-win": "electron-packager . $npm_package_productName --out=dist --ignore=dist --prune --asar --platform=win32 --arch=x64 --version=0.30.0"
+    "build": "electron-packager . Safe_Uploader --out=dist --ignore=dist --prune --asar --all --version=0.30.0 --overwrite",
+    "build-win": "electron-packager . Safe_uploader --out=dist --ignore=dist --prune --asar --asar_unpack=*.dll --platform=win32 --arch=x64 --version=0.30.0 --overwrite",
+    "build-linux": "electron-packager . Safe_uploader --out=dist --ignore=dist --prune --asar --asar_unpack=*.so --platform=linux --arch=x64 --version=0.30.0 --overwrite",
+    "build-osx": "electron-packager . Safe_uploader --out=dist --ignore=dist --prune --asar --asar_unpack=*.dylib --platform=darwin --arch=x64 --version=0.30.0 --overwrite"
   },
   "files": [
     "index.js",

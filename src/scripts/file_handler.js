@@ -28,17 +28,17 @@ var UploadHelper = function(id) {
 
   };
 
-  //TODO verify files names on OSX
   var getLibraryFileName = function() {
     var fileName;
+    var root = (__dirname.indexOf('asar') === -1) ? './src/' : path.resolve(__dirname, '../../../app.asar.unpacked/src/');
     if (/^win/.test(process.platform)) { // Windows
-      fileName = './src/safe_ffi.dll';
+      fileName = 'safe_ffi.dll';
     } else if (/^darwin/.test(process.platform)) { // OSX
       fileName = 'libsafe_ffi.dylib';
     } else { // LINUX
       fileName = 'libsafe_ffi.so';
     }
-    return fileName;
+    return path.resolve(root, fileName);
   };
 
   var initSafeApi = function() {

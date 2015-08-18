@@ -139,6 +139,7 @@ var publishTemplate = function() {
     showSection('step-3');
     UploadHelper().uploadFolder(tempDirPath);
   } catch(e) {
+    console.log(e.message);
     showSection('failure');
   }
 };

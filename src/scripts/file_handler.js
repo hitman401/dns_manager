@@ -135,14 +135,17 @@ var UploadHelper = function(id) {
         if (err) {
           showSection('failure');
         }
-        setTimeout(function() {
+        try {
           var errorCode = safeApi.register_dns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath));
           if (errorCode > 0) {
             showSection('failure');
           }
           console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
           showSection('success');
-        }, 0);
+        } catch (e) {
+          console.log(e);
+          showSection('failure');
+        }
       });
       handler.update(null, 0);
       uploadFiles(folderPath, handler);

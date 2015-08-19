@@ -131,9 +131,9 @@ var publishTemplate = function() {
     fs.writeFileSync(path.resolve(tempDirPath, 'index.html'), util.format(templateString, title, content));
     var buff = fs.readFileSync(path.resolve(root, 'imgs/phone_purple.jpg'));
     fs.writeFileSync(path.resolve(tempDirPath, 'bg.jpg'), buff);
-    var buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/normalize.css'));
+    buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/normalize.css'));
     fs.writeFileSync(path.resolve(tempDirPath, 'normalize.css'), buff);
-    var buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/foundation.css'));
+    buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/foundation.css'));
     fs.writeFileSync(path.resolve(tempDirPath, 'foundation.css'), buff);
     resetTemplate();
     showSection('step-3');

@@ -1,5 +1,7 @@
 var remote = require('remote');
 var Menu = remote.require('menu');
+var UploadHelper = require('../scripts/file_handler');
+console.log(UploadHelper);
 // TODO fetch from bower components itself
 window.$ = window.jQuery = require('../scripts/jquery.js');
 
@@ -117,6 +119,27 @@ var resetTemplate = function() {
 };
 
 
+var registerDragRegion = function() {
+  var helper = new UploadHelper(function() { // onstarted
+    showSection('step-3');
+  },function(meter) { // Progress Update
+    $('.indicator div.meter').css('width', meter + '%');
+  }, function(err) { // done
+    console.log('Competed : ' + err + '#');
+  });
+  var holder = document.getElementById(id);
+  holder.ondragover = function () { this.className = 'hover'; return false; };
+  holder.ondragleave = function () { this.className = ''; return false; };
+  holder.ondrop = function (e) {
+    e.preventDefault();
+    if (e.dataTransfer.files.length === 0) {
+      return false;
+    }
+    helper.uploadFolder(e.dataTransfer.files[0].path);
+    return false;
+  };
+};
+
 var publishTemplate = function() {
   var path = require('path');
   var temp = require('temp').track();
@@ -137,7 +160,13 @@ var publishTemplate = function() {
     fs.writeFileSync(path.resolve(tempDirPath, 'foundation.css'), buff);
     resetTemplate();
     showSection('step-3');
-    UploadHelper().uploadFolder(tempDirPath);
+    new UploadHelper(function() { // onstarted
+      showSection('step-3');
+    },function(meter) { // Progress Update
+      $('.indicator div.meter').css('width', meter + '%');
+    }, function(err) { // done
+      showSection(err ? 'failure': 'success');
+    }).uploadFolder(tempDirPath);
   } catch(e) {
     console.log(e.message);
     showSection('failure');

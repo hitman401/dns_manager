@@ -1,6 +1,4 @@
-var safeApi;
-
-var UploadHelper = function(id) {
+module.exports = function(onStart, onProgress, onComplete) {
   var fs = require('fs');
   var path = require('path');
   var mime = require('mime');
@@ -8,24 +6,28 @@ var UploadHelper = function(id) {
   var ref = require('ref');
   var ArrayType = require('ref-array');
   var IntArray = ArrayType(ref.types.int);
-  var holder;
+  var safeApi;
 
   var ProgressHandler = function(totalSize, callback) {
     var completed = 0;
+    var alive = true;
 
     this.update = function(error, size) {
+      if (!alive) {
+        return;
+      }
       if (error) {
+        alive = false;
         callback ? callback(error) : function(){ /*no-op*/ };
         return;
       }
       completed += size;
       var meter = (completed * 97.5) / totalSize;
-      $('.indicator div.meter').css('width', meter + '%');
+      onProgress(meter);
       if (completed === totalSize) {
         callback ? callback() : function(){ /*no-op*/ };
       }
     };
-
   };
 
   var getLibraryFileName = function() {
@@ -129,22 +131,24 @@ var UploadHelper = function(id) {
     if (!safeApi) {
       initSafeApi();
     }
-    window.showSection('step-3');
+    onStart();
     try {
       var handler = new ProgressHandler(computeDirectorySize(folderPath), function(err) {
         if (err) {
-          showSection('failure');
+          onComplete(err);
+          return;
         }
         try {
           var errorCode = safeApi.register_dns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath));
           if (errorCode > 0) {
-            showSection('failure');
+            onComplete(err);
+            return;
           }
           console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
-          showSection('success');
+          onComplete();
         } catch (e) {
           console.log(e);
-          showSection('failure');
+          onComplete(999);
         }
       });
       handler.update(null, 0);
@@ -154,25 +158,6 @@ var UploadHelper = function(id) {
       window.showSection('failure');
     }
   };
-
-  var dropHandler = function (e) {
-    e.preventDefault();
-    if (e.dataTransfer.files.length === 0) {
-      return false;
-    }
-    uploadFolder(e.dataTransfer.files[0].path);
-    return false;
-  };
-
-  if (id) {
-    holder = document.getElementById(id);
-    holder.ondragover = function () { this.className = 'hover'; return false; };
-    holder.ondragleave = function () { this.className = ''; return false; };
-    holder.ondrop = dropHandler;
-  }
   this.uploadFolder = uploadFolder;
-
   return this;
 };
-
-UploadHelper('drag_drop');

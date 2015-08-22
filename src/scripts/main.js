@@ -140,6 +140,18 @@ var registerDragRegion = function() {
   };
 };
 
+var test = function() {
+  var helper = new UploadHelper(function() { // onstarted
+    //showSection('step-3');
+  },function(meter) { // Progress Update
+
+  }, function(err) { // done
+    console.log('Competed : ' + err + '#');
+    showSection('success');
+  });
+  helper.test();
+};
+
 var publishTemplate = function() {
   var path = require('path');
   var temp = require('temp').track();

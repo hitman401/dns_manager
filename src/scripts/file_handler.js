@@ -158,6 +158,14 @@ module.exports = function(onStart, onProgress, onComplete) {
       window.showSection('failure');
     }
   };
+
+  this.test = function() {
+    if (!safeApi) {
+      initSafeApi();
+    }
+    onComplete(safeApi.create_sub_directory('my-test', false));
+  };
+
   this.uploadFolder = uploadFolder;
   return this;
 };

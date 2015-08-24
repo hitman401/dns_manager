@@ -38,6 +38,9 @@ var SafeApi = function() {
       console.log(msg);
       return;
     }
+    if (msg.error === 999) {
+      console.log(999 + ' : ' + msg.msg);
+    }
     CallbackStore.get(msg.postback)(msg.error, msg.data);
     CallbackStore.delete(msg.postback);
   });
@@ -56,7 +59,7 @@ var SafeApi = function() {
     childProcess.send({
       method: 'create_file',
       directoryPath: directoryPath,
-      filename: fileName,
+      fileName: fileName,
       localFilePath: localFilePath,
       postback: directoryPath + fileName
     });

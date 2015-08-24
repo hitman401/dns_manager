@@ -160,10 +160,12 @@ module.exports = function(onStart, onProgress, onComplete) {
   };
 
   this.test = function() {
-    if (!safeApi) {
-      initSafeApi();
-    }
-    onComplete(safeApi.create_sub_directory('my-test', false));
+    var API = require("child_process").fork("./src/scripts/safe_api");
+    API.on('message', function(msg) {
+      console.log(msg);
+      showSection('success');
+    }.bind(this));
+    API.send({path: getLibraryFileName()});
   };
 
   this.uploadFolder = uploadFolder;

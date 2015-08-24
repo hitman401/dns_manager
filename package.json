@@ -34,7 +34,8 @@
     "mime": "^1.3.4",
     "ref": "^1.0.2",
     "ref-array": "^1.1.1",
-    "temp": "^0.8.3"
+    "temp": "^0.8.3",
+    "fibers": "latest"
   },
   "devDependencies": {
     "electron-packager": "^5.0.0",

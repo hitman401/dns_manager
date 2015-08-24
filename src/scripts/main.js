@@ -147,11 +147,15 @@ var publishTemplate = function() {
   var content = $('#template_content_input').val();
   var fs = require('fs');
   var util = require('util');
+  var serviceName = $('#service_name').val();
+  var publicName = $('#public_name').val();
   try {
     var root = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
     var templateString = fs.readFileSync(path.resolve(root, 'views/template.html')).toString();
     var tempDirPath = temp.mkdirSync('safe_uploader_template');
-    fs.writeFileSync(path.resolve(tempDirPath, 'index.html'), util.format(templateString, title, content));
+
+    fs.writeFileSync(path.resolve(tempDirPath, 'index.html'),
+        util.format(templateString.replace(/SAFE_SERVICE/g, serviceName).replace(/SAFE_PUBLIC/g, publicName), title, content));
     var buff = fs.readFileSync(path.resolve(root, 'imgs/phone_purple.jpg'));
     fs.writeFileSync(path.resolve(tempDirPath, 'bg.jpg'), buff);
     buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/normalize.css'));

@@ -1,6 +1,7 @@
 var SafeApi = function() {
-  var childProcess = require("child_process").fork("./src/scripts/safe_api/safe_io");
   var path = require('path');
+
+  var childProcess = require("child_process").fork(((__dirname.indexOf('asar') === -1) ? './src/scripts/safe_api' : __dirname) + '/safe_io');
 
   var CallbackStore = {
     get: function(key) {
@@ -16,7 +17,7 @@ var SafeApi = function() {
 
   var getLibraryFileName = function() {
     var fileName;
-    var root = (__dirname.indexOf('asar') === -1) ? './src/' : path.resolve(__dirname, '../../../app.asar.unpacked/src/');
+    var root = (__dirname.indexOf('asar') === -1) ? './src/scripts/safe_api/' : path.resolve(__dirname, '../../../../app.asar.unpacked/src/scripts/safe_api/');
     if (/^win/.test(process.platform)) { // Windows
       fileName = 'safe_ffi.dll';
     } else if (/^darwin/.test(process.platform)) { // OSX
@@ -36,8 +37,7 @@ var SafeApi = function() {
       console.log(msg);
       return;
     }
-    var callback = CallbackStore.get(msg.postback);
-    msg.error === 0 ? callback(null, msg.data) : callback(msg.error);
+    CallbackStore.get(msg.postback)(msg.error, msg.data);
     CallbackStore.delete(msg.postback);
   });
 

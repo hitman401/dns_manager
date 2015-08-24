@@ -101,6 +101,7 @@ module.exports = function(onStart, onProgress, onComplete) {
         try {
           safeApi.registerDns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath), function(errorCode) {
             if (errorCode !== 0) {
+              console.log('Registration FAILED :: ' + errorCode);
               onComplete(err);
             } else {
               console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));

@@ -23,8 +23,9 @@ var SafeIO = function() {
   };
 
   this.registerDns = function(publicName, serviceName, directoryPath) {
-    api.register_dns(publicName, serviceName, directoryPath);
+    return api.register_dns(publicName, serviceName, directoryPath);
   };
+
   return this;
 };
 
@@ -34,7 +35,6 @@ process.on('message', function(request) {
   var load = function(path) {
     try {
       safeIo.load(path);
-      process.send('Load completed');
     } catch(ex) {
       process.send('Load failed : ' + path );
       process.abort();

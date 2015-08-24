@@ -35,8 +35,7 @@ module.exports = function(onStart, onProgress, onComplete) {
 
   var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size, handler) {
     console.log("Creating file " + fileName + "  in " + networkDirectory);
-    var buffer = fs.readFileSync(path.join(localDirectory, fileName));
-    safeApi.createFile(networkDirectory, fileName, buffer, size, handler.update);
+    safeApi.createFile(networkDirectory, fileName, path.join(localDirectory, fileName), handler.update);
   };
 
   var computeDirectorySize = function(folderPath) {

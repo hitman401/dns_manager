@@ -1,5 +1,6 @@
 var SafeApi = function() {
   var path = require('path');
+  var fs = require('fs');
 
   var childProcess = require("child_process").fork(((__dirname.indexOf('asar') === -1) ? './src/scripts/safe_api' : __dirname) + '/safe_io');
 
@@ -50,14 +51,13 @@ var SafeApi = function() {
      });
   };
 
-  this.createFile = function(directoryPath, fileName, contents, size, callback) {
+  this.createFile = function(directoryPath, fileName, localFilePath, callback) {
     CallbackStore.put(directoryPath + fileName, callback);
     childProcess.send({
       method: 'create_file',
       directoryPath: directoryPath,
       filename: fileName,
-      contents: contents,
-      size: size,
+      localFilePath: localFilePath,
       postback: directoryPath + fileName
     });
   };

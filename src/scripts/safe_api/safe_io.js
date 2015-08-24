@@ -2,6 +2,7 @@ var ffi = require('ffi');
 var ref = require('ref');
 var ArrayType = require('ref-array');
 var IntArray = ArrayType(ref.types.int);
+var fs = require('fs');
 
 var SafeIO = function() {
   var api;
@@ -18,8 +19,8 @@ var SafeIO = function() {
     return api.create_sub_directory(directoryPath, false);
   };
 
-  this.createFile = function(directoryPath, fileName, contents, size) {
-    return api.create_file(directoryPath + '/' + fileName, contents, size);
+  this.createFile = function(directoryPath, fileName, contents) {
+    return api.create_file(directoryPath + '/' + fileName, contents, contents.length);
   };
 
   this.registerDns = function(publicName, serviceName, directoryPath) {
@@ -58,11 +59,12 @@ process.on('message', function(request) {
     }
   };
 
-  var createFile = function(directoryPath, fileName, contents, size, postback) {
+  var createFile = function(directoryPath, fileName, localFilePath, postback) {
     try {
+      var contents = fs.readFileSync(localFilePath);
       process.send({
-        error: 0,//safeIo.createFile(directoryPath, fileName, contents),
-        data: size,
+        error: safeIo.createFile(directoryPath, fileName, contents),
+        data: contents.length,
         postback: postback
       });
     } catch(ex) {
@@ -100,7 +102,7 @@ process.on('message', function(request) {
       break;
 
     case 'create_file':
-      createFile(request.directoryPath, request.fileName, request.contents, request.size, request.postback);
+      createFile(request.directoryPath, request.fileName, request.localFilePath, request.postback);
       break;
 
     case 'register_dns':
@@ -111,6 +113,7 @@ process.on('message', function(request) {
       break;
   }
 });
+
 
 process.on('uncaughtException',function(err) {
   process.send(err.message);

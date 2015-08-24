@@ -119,13 +119,13 @@ var resetTemplate = function() {
 };
 
 
-var registerDragRegion = function() {
+var registerDragRegion = function(id) {
   var helper = new UploadHelper(function() { // onstarted
     showSection('step-3');
   },function(meter) { // Progress Update
     $('.indicator div.meter').css('width', meter + '%');
   }, function(err) { // done
-    console.log('Competed : ' + err + '#');
+    showSection(err ? 'failure': 'success');
   });
   var holder = document.getElementById(id);
   holder.ondragover = function () { this.className = 'hover'; return false; };
@@ -173,4 +173,4 @@ var publishTemplate = function() {
   }
 };
 
-//registerDragRegion();
+registerDragRegion('drag_drop');

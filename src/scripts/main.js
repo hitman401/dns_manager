@@ -1,7 +1,7 @@
 var remote = require('remote');
 var Menu = remote.require('menu');
 var UploadHelper = require('../scripts/file_handler');
-console.log(UploadHelper);
+
 // TODO fetch from bower components itself
 window.$ = window.jQuery = require('../scripts/jquery.js');
 
@@ -140,18 +140,6 @@ var registerDragRegion = function() {
   };
 };
 
-var test = function() {
-  var helper = new UploadHelper(function() { // onstarted
-    //showSection('step-3');
-  },function(meter) { // Progress Update
-
-  }, function(err) { // done
-    console.log('Competed : ' + err + '#');
-    showSection('success');
-  });
-  helper.test();
-};
-
 var publishTemplate = function() {
   var path = require('path');
   var temp = require('temp').track();
@@ -184,3 +172,5 @@ var publishTemplate = function() {
     showSection('failure');
   }
 };
+
+//registerDragRegion();

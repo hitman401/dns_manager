@@ -2,11 +2,8 @@ module.exports = function(onStart, onProgress, onComplete) {
   var fs = require('fs');
   var path = require('path');
   var mime = require('mime');
-  var ffi = require('ffi');
-  var ref = require('ref');
-  var ArrayType = require('ref-array');
-  var IntArray = ArrayType(ref.types.int);
-  var safeApi;
+
+  var safeApi = require('../scripts/safe_api/api').safeAPI;
 
   var ProgressHandler = function(totalSize, callback) {
     var completed = 0;
@@ -21,6 +18,7 @@ module.exports = function(onStart, onProgress, onComplete) {
         callback ? callback(error) : function(){ /*no-op*/ };
         return;
       }
+      console.log('SIZE : ' + size);
       completed += size;
       var meter = (completed * 97.5) / totalSize;
       onProgress(meter);
@@ -30,50 +28,15 @@ module.exports = function(onStart, onProgress, onComplete) {
     };
   };
 
-  var getLibraryFileName = function() {
-    var fileName;
-    var root = (__dirname.indexOf('asar') === -1) ? './src/' : path.resolve(__dirname, '../../../app.asar.unpacked/src/');
-    if (/^win/.test(process.platform)) { // Windows
-      fileName = 'safe_ffi.dll';
-    } else if (/^darwin/.test(process.platform)) { // OSX
-      fileName = 'libsafe_ffi.dylib';
-    } else { // LINUX
-      fileName = 'libsafe_ffi.so';
-    }
-    return path.resolve(root, fileName);
-  };
-
-  var initSafeApi = function() {
-    safeApi = ffi.Library(getLibraryFileName(), {
-      'create_sub_directory': ['int', ['string', 'bool']],
-      'create_file': ['int', ['string', IntArray, 'int']],
-      'register_dns': ['int', ['string', 'string', 'string']]
-    });
-  };
-
   var createDirectoryInNetwork = function(directoryPath, callback) {
-    setTimeout(function() {
-      console.log('Creating directory ' + directoryPath);
-      var errorCode = safeApi.create_sub_directory(directoryPath, false);
-      if (errorCode > 0) {
-        callback(errorCode);
-      } else {
-        callback(null, errorCode);
-      }
-    }, 0);
+    console.log('Creating directory ' + directoryPath);
+    safeApi.createDirectory(directoryPath, callback);
   };
 
   var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size, handler) {
-    setTimeout(function() {
-      console.log("Creating file %s in %s", fileName, networkDirectory);
-      var buffer = fs.readFileSync(path.join(localDirectory, fileName));
-      var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer, size);
-      if (errorCode > 0) {
-        handler.update(errorCode);
-      } else {
-        handler.update(null, size);
-      }
-    }, 0);
+    console.log("Creating file " + fileName + "  in " + networkDirectory);
+    var buffer = fs.readFileSync(path.join(localDirectory, fileName));
+    safeApi.createFile(networkDirectory, fileName, buffer, size, handler.update);
   };
 
   var computeDirectorySize = function(folderPath) {
@@ -128,9 +91,6 @@ module.exports = function(onStart, onProgress, onComplete) {
       alert('Drag and drop a directory!');
       return;
     }
-    if (!safeApi) {
-      initSafeApi();
-    }
     onStart();
     try {
       var handler = new ProgressHandler(computeDirectorySize(folderPath), function(err) {
@@ -139,13 +99,14 @@ module.exports = function(onStart, onProgress, onComplete) {
           return;
         }
         try {
-          var errorCode = safeApi.register_dns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath));
-          if (errorCode > 0) {
-            onComplete(err);
-            return;
-          }
-          console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
-          onComplete();
+          safeApi.registerDns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath), function(errorCode) {
+            if (errorCode !== 0) {
+              onComplete(err);
+            } else {
+              console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
+              onComplete();
+            }
+          });
         } catch (e) {
           console.log(e);
           onComplete(999);
@@ -157,15 +118,6 @@ module.exports = function(onStart, onProgress, onComplete) {
       console.error(e);
       window.showSection('failure');
     }
-  };
-
-  this.test = function() {
-    var API = require("child_process").fork("./src/scripts/safe_api");
-    API.on('message', function(msg) {
-      console.log(msg);
-      showSection('success');
-    }.bind(this));
-    API.send({path: getLibraryFileName()});
   };
 
   this.uploadFolder = uploadFolder;

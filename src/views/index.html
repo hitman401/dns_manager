@@ -24,7 +24,118 @@
 <!--</header>-->
 <section id="step-1">
     <div class="row-full centered-layout">
-        <button onclick="test()">TEST</button>
+        <div class="row">
+            <div class="column medium-9 medium-centered text-center">
+                <p class="header">Enter your Service and Domain Name to get started</p>
+                <p class="description">Service name can be www, blog, etc. followed by the public name. Eg, safe:www.maidsafe</p>
+                <div id="registration" class="row">
+                    <div class="column medium-9 medium-centered">
+                        <div class="column medium-2">
+                            <span class="scheme">safe:</span>
+                        </div>
+                        <div class="column medium-4 no-pad">
+                            <input type="text" id="service_name" placeholder="www" required="true"/>
+                        </div>
+                        <div class="column medium-6 no-pad">
+                            <span class="dot">.</span>
+                            <input type="text" id="public_name" placeholder="maidsafe" required="true"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column medium-6 medium-centered">
+                        <button onclick="register()">Upload Files</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="step-2" class="hide">
+    <div class="row-full centered-layout">
+        <div class="column medium-5 text-center">
+            <div class="row">
+                <div class="column medium-12 text-center">
+                    <p class="header">Drag your files here to Upload</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column medium-7 large-6 medium-centered text-center">
+                    <div id="drag_drop" >
+                        <div class="outer-circle">
+                            <div class="inner-circle">
+                                <div class="holder">
+                                    <img alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column medium-2 text-center">
+            <p class="header">Or</p>
+        </div>
+        <div class="column medium-5">
+            <div class="row">
+                <div class="column medium-12 text-center">
+                    <p class="header">Use a template to create a Site</p>
+                    <button class="btn_template" onclick="showSection('template')">Use Template</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="step-3" class="hide">
+    <div class="row-full centered-layout">
+        <div class="row">
+            <div class="column medium-10 medium-centered text-center">
+                <div class="row">
+                    <div class="row text-center">
+                        <p class="header">Uploading your files</p>
+                    </div>
+                    <div class="column medium-3 medium-centered upload-region">
+                        <div id="progress_bar" class="row">
+                            <div class="row">
+                                <div class="column medium-12 medium-centered">
+                                    <img src="../imgs/upload.png"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="column medium-12 medium-centered indicator">
+                                    <div class="meter">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="template" class="hide">
+    <div class="row-full template_banner">
+        <p id="template_title" onclick="editTemplateTitle()">
+            My Page
+        </p>
+        <div id="edit_template_title" class="column medium-centered medium-4 hide">
+            <input id="template_title_input" type="text" value="MyPage" onchange="updateTemplateTitle(this.value)"/>
+        </div>
+    </div>
+    <div class="row-full template_content">
+        <p id="template_content" onclick="editTemplateContent()">
+            This page is created and published on the SAFE Network using the SAFE Uploader
+        </p>
+        <div id="edit_template_content" class="column medium-centered medium-10 hide">
+            <input id="template_content_input" type="text"
+                   value="This page is created and published on the SAFE Network using the SAFE Uploader"
+                   onchange="updateTemplateContent(this.value)"/>
+        </div>
+    </div>
+    <div class="template_footer">
+        <div onclick="resetTemplate();showSection('step-2');">START OVER</div>
+        <div onclick="publishTemplate()">PUBLISH</div>
     </div>
 </section>
 <section id="success" class="hide">

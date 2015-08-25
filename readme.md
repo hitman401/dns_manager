@@ -2,10 +2,13 @@
 
 An example application to demonstrate uploading file to the Safe network
 
+## Pre-Requisites
+  NodeJs should be installed
+
 ##Dependency
 
-Build the [Safe_ffi](https://github.com/ustulation/safe_ffi/tree/master/rust) rust code to generate dynamic library.
-Place the library in the src folder
+Build the [Safe_ffi](https://github.com/ustulation/safe_ffi/tree/master/rust) rust code to generate a dynamic library.
+Place the library in the `src/scripts/safe_api` folder
 
 
 ## Dev
@@ -15,7 +18,7 @@ $ npm install
 $ npm rebuild
 ```
 
-`npm rebuild` will rebuild the native modules with `electron-rebuild`
+`./node_modules/.bin/electron_build` will rebuild the native modules
 
 ### Run
 

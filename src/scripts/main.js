@@ -1,11 +1,14 @@
 var remote = require('remote');
 var Menu = remote.require('menu');
+var path = require('path');
+
+var appSrcFolderPath = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
 var UploadHelper = require('../scripts/file_handler');
 
 // TODO fetch from bower components itself
 window.$ = window.jQuery = require('../scripts/jquery.js');
-
-
+// TODO Inject the error HTML from Code itself
+// TODO use jquery hide and show methods instead of adding classes
 // Disable Menu bar
 Menu.setApplicationMenu(null);
 
@@ -90,46 +93,6 @@ document.addEventListener('drop', function(e){
   e.stopPropagation();
 }, false);
 
-
-// TODO use jquery hide and show methods instead of adding classes
-$('#template_title_input').focusout(function() {
-  $('#edit_template_title').addClass('hide');
-  $('#template_title').removeClass('hide');
-});
-
-var editTemplateTitle = function() {
-  $('#template_title').addClass('hide');
-  $('#edit_template_title').removeClass('hide');
-  $('#template_title_input').focus();
-};
-
-var updateTemplateTitle = function(value) {
-  $('#template_title').html(value);
-};
-
-$('#template_content_input').focusout(function() {
-  $('#edit_template_content').addClass('hide');
-  $('#template_content').removeClass('hide');
-});
-
-var editTemplateContent = function() {
-  $('#template_content').addClass('hide');
-  $('#edit_template_content').removeClass('hide');
-  $('#template_content_input').focus();
-};
-
-var updateTemplateContent = function(value) {
-  $('#template_content').html(value);
-};
-
-var resetTemplate = function() {
-  $('#template_title').html("My Page");
-  $('#template_title_input').val("My Page");
-  $('#template_content').html("This page is created and published on the SAFE Network using the SAFE Uploader");
-  $('#template_content_input').val("This page is created and published on the SAFE Network using the SAFE Uploader");
-};
-
-
 var onUploadStarted = function() {
   showSection('step-3');
 };
@@ -167,7 +130,6 @@ var registerDragRegion = function(id) {
  * The temp directory is finally passed for Uploading to the network
  */
 var publishTemplate = function() {
-  var path = require('path');
   var temp = require('temp').track();
   var fs = require('fs');
   var util = require('util');
@@ -179,27 +141,26 @@ var publishTemplate = function() {
   var publicName = $('#public_name').val();
   var templateDependencies = {
     'bg.jpg': 'imgs/phone_purple.jpg',
-    'normalize.css': 'bower_components/bower-foundation5/css/normalize.css',
-    'foundation.css': 'bower_components/bower-foundation5/css/foundation.css'
+    'normalize.css': 'bower_components/bower-foundation5/css/normalize.css'
+    //'foundation.css': 'bower_components/bower-foundation5/css/foundation.css'
   };
 
   try {
     var tempDirPath = temp.mkdirSync(tempDirName);
 
-    var root = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
     // Save the template in the temp Directory
-    var templateString = fs.readFileSync(path.resolve(root, 'views/template.html')).toString();
+    var templateString = fs.readFileSync(path.resolve(appSrcFolderPath, 'views/template.html')).toString();
     fs.writeFileSync(path.resolve(tempDirPath, 'index.html'),
         util.format(templateString.replace(/SAFE_SERVICE/g, serviceName).replace(/SAFE_PUBLIC/g, publicName), title, content));
     // Save the template dependencies
     var buff;
     for (var key in templateDependencies) {
-      buff = fs.readFileSync(path.resolve(root, templateDependencies[key]));
+      buff = fs.readFileSync(path.resolve(appSrcFolderPath, templateDependencies[key]));
       fs.writeFileSync(path.resolve(tempDirPath, key), buff);
     }
-    // Values edited in the template are reset to defaults
+    //// Values edited in the template are reset to defaults
     resetTemplate();
-    // Start upload
+    //// Start upload
     var helper = new UploadHelper(onUploadStarted, updateProgressBar, onUploadComplete);
     helper.uploadFolder(tempDirPath);
   } catch(e) {
@@ -209,3 +170,42 @@ var publishTemplate = function() {
 };
 
 registerDragRegion('drag_drop');
+
+
+/**** Template Updation functions *****/
+$('#template_title_input').focusout(function() {
+  $('#edit_template_title').addClass('hide');
+  $('#template_title').removeClass('hide');
+});
+
+var editTemplateTitle = function() {
+  $('#template_title').addClass('hide');
+  $('#edit_template_title').removeClass('hide');
+  $('#template_title_input').focus();
+};
+
+var updateTemplateTitle = function(value) {
+  $('#template_title').html(value);
+};
+
+$('#template_content_input').focusout(function() {
+  $('#edit_template_content').addClass('hide');
+  $('#template_content').removeClass('hide');
+});
+
+var editTemplateContent = function() {
+  $('#template_content').addClass('hide');
+  $('#edit_template_content').removeClass('hide');
+  $('#template_content_input').focus();
+};
+
+var updateTemplateContent = function(value) {
+  $('#template_content').html(value);
+};
+
+var resetTemplate = function() {
+  $('#template_title').html("My Page");
+  $('#template_title_input').val("My Page");
+  $('#template_content').html("This page is created and published on the SAFE Network using the SAFE Uploader");
+  $('#template_content_input').val("This page is created and published on the SAFE Network using the SAFE Uploader");
+};

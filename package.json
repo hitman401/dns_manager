@@ -26,12 +26,12 @@
     "src"
   ],
   "keywords": [
-    "electron-app"
+    "Maidsafe".
+    "Network Uploader"
   ],
   "dependencies": {
     "electron-debug": "^0.1.1",
     "ffi": "^1.3.2",
-    "fibers": "latest",
     "mime": "^1.3.4",
     "ref": "^1.0.2",
     "ref-array": "^1.1.1",

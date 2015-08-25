@@ -1,8 +1,5 @@
-/node_modules
-/build
-/cache
+node_modules
 /.idea
+/src/bower_components
+/template
 /dist
-/app/bower_components
-/app/node_modules
-/app/template

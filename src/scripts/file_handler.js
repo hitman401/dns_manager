@@ -1,79 +1,62 @@
-var safeApi;
-
-var UploadHelper = function(id) {
+module.exports = function(onStart, onProgress, onComplete) {
   var fs = require('fs');
   var path = require('path');
   var mime = require('mime');
-  var ffi = require('ffi');
-  var ref = require('ref');
-  var ArrayType = require('ref-array');
-  var IntArray = ArrayType(ref.types.int);
-  var holder;
 
+  var safeApi = require('../scripts/safe_api/api');
+  var EXCEPTION_ERROR_CODE = 999;
+
+  // TODO can replace ProgessHanlder with Async.js
   var ProgressHandler = function(totalSize, callback) {
     var completed = 0;
+    var alive = true;
 
     this.update = function(error, size) {
+      if (!alive) {
+        return;
+      }
       if (error) {
+        alive = false;
         callback ? callback(error) : function(){ /*no-op*/ };
         return;
       }
       completed += size;
       var meter = (completed * 97.5) / totalSize;
-      $('.indicator div.meter').css('width', meter + '%');
+      onProgress(meter);
       if (completed === totalSize) {
         callback ? callback() : function(){ /*no-op*/ };
       }
     };
-
   };
 
-  //TODO verify files names on OSX
-  var getLibraryFileName = function() {
-    var fileName;
-    if (/^win/.test(process.platform)) { // Windows
-      fileName = 'safe_ffi.dll';
-    } else if (/^darwin/.test(process.platform)) { // OSX
-      fileName = 'libsafe_ffi.dylib';
-    } else { // LINUX
-      fileName = 'libsafe_ffi.so';
-    }
-    return fileName;
-  };
-
-  var initSafeApi = function() {
-    safeApi = ffi.Library(getLibraryFileName(), {
-      'create_sub_directory': ['int', ['string', 'bool']],
-      'create_file': ['int', ['string', IntArray, 'int']],
-      'register_dns': ['int', ['string', 'string', 'string']]
-    });
-  };
-
+  /**
+   * Creates a public directory in the network
+   * @param directoryPath
+   * @param callback
+   */
   var createDirectoryInNetwork = function(directoryPath, callback) {
-    setTimeout(function() {
-      console.log('Creating directory ' + directoryPath);
-      var errorCode = safeApi.create_sub_directory(directoryPath, false);
-      if (errorCode > 0) {
-        callback(errorCode);
-      } else {
-        callback(null, errorCode);
-      }
-    }, 0);
+    console.log('Creating directory ' + directoryPath);
+    safeApi.createDirectory(directoryPath, callback);
   };
 
+  /**
+   * Writes file to the network
+   * @param localDirectory - Local directory to look for the file
+   * @param networkDirectory - Directory in the network to save the file
+   * @param fileName - Name of teh file
+   * @param size - Size of the file
+   * @param handler - ProgressHandler
+   */
   var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size, handler) {
-    setTimeout(function() {
-      console.log("Creating file %s in %s", fileName, networkDirectory);
-      var buffer = fs.readFileSync(path.join(localDirectory, fileName));
-      var errorCode = safeApi.create_file(networkDirectory + '/' + fileName, buffer, size);
-      if (errorCode > 0) {
-        handler.update(errorCode);
-      } else {
-        handler.update(null, size);
-      }
-    }, 0);
+    console.log("Creating file " + fileName + "  in " + networkDirectory);
+    safeApi.createFile(networkDirectory, fileName, path.join(localDirectory, fileName), handler.update);
   };
 
+  /**
+   * Recursively computes the size of the directory
+   * @param folderPath
+   * @returns {number} size of the Directory
+   */
   var computeDirectorySize = function(folderPath) {
     var stats;
     var tmpPath;
@@ -91,6 +74,16 @@ var UploadHelper = function(id) {
     return size;
   };
 
+  /**
+   * Upload the files after reading through the directory.
+   * For the root directory the networkDirectoryPath will be null and as it is called recursively the network path gets building
+   * Files can be created only after the directory is ready on the network. Thus, files are uploaded on the callback of
+   * createDirectoryInNetwork function
+   * @param folderPath - Local folder path
+   * @param handler - ProgressHandler
+   * @param networkDirectoryPath - Path of the directory in the network
+   */
+  // TODO simplify implementation - refactor
   var uploadFiles = function(folderPath, handler, networkDirectoryPath) {
     var stats;
     if(!networkDirectoryPath) {
@@ -120,29 +113,45 @@ var UploadHelper = function(id) {
     }
   };
 
+  /**
+   * DNS registration is the last step after Uploading the files to the network
+   * @param errorCode
+   */
+  var registerDnsCallback = function(errorCode) {
+    if (errorCode !== 0) {
+      console.log('Registration FAILED :: ' + errorCode);
+      onComplete(err);
+    } else {
+      console.log('Registered Domain: safe:' + $('#service_name').val() + '.' + $('#public_name').val());
+      onComplete();
+    }
+  };
+
+  /**
+   * Entry point for uploading the files to the network
+   * Start Uploading teh directory to the network
+   * Callback for onStart, updatingProgress and onComplete will be triggered as the process is done
+   * @param folderPath
+   */
   var uploadFolder = function(folderPath) {
     var stats = fs.statSync(folderPath);
     if (!stats.isDirectory()) {
       alert('Drag and drop a directory!');
       return;
     }
-    if (!safeApi) {
-      initSafeApi();
-    }
-    window.showSection('step-3');
+    onStart();
     try {
       var handler = new ProgressHandler(computeDirectorySize(folderPath), function(err) {
         if (err) {
-          showSection('failure');
+          onComplete(err);
+          return;
         }
-        setTimeout(function() {
-          var errorCode = safeApi.register_dns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath));
-          if (errorCode > 0) {
-            showSection('failure');
-          }
-          console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
-          window.showSection('success');
-        }, 0);
+        try {
+          safeApi.registerDns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath), registerDnsCallback);
+        } catch (e) {
+          console.log(e);
+          onComplete(EXCEPTION_ERROR_CODE);
+        }
       });
       handler.update(null, 0);
       uploadFiles(folderPath, handler);
@@ -152,24 +161,6 @@ var UploadHelper = function(id) {
     }
   };
 
-  var dropHandler = function (e) {
-    e.preventDefault();
-    if (e.dataTransfer.files.length === 0) {
-      return false;
-    }
-    uploadFolder(e.dataTransfer.files[0].path);
-    return false;
-  };
-
-  if (id) {
-    holder = document.getElementById(id);
-    holder.ondragover = function () { this.className = 'hover'; return false; };
-    holder.ondragleave = function () { this.className = ''; return false; };
-    holder.ondrop = dropHandler;
-  }
   this.uploadFolder = uploadFolder;
-
   return this;
 };
-
-UploadHelper('drag_drop');

@@ -1,15 +1,40 @@
-## dns_manager
+# Safe Network Uploader
 
-An example application for uploading files to the Safe Network.
+An example application to demonstrate uploading file to the Safe network
 
-#Pre-Requisites:
-nodejs should be installed.
-The application is built using [nwjs](https://github.com/nwjs/nw.js). For development nwjs should be setup locally.
+## Pre-Requisites
+  NodeJs should be installed
 
-1. Clone the project
-2. execute `grunt init`. This will download and initialise dependencies for the application development
+##Dependency
+
+Build the [Safe_ffi](https://github.com/ustulation/safe_ffi/tree/master/rust) rust code to generate a dynamic library.
+Place the library in the `src/scripts/safe_api` folder
 
 
-TODO - UI
-1. Hover state on drag
-2. Upload completed/Error Screen
+## Dev
+
+```
+$ npm install
+$ npm rebuild
+```
+
+`./node_modules/.bin/electron_build` will rebuild the native modules
+
+### Run
+
+```
+$ npm start
+```
+
+### Build
+
+```
+$ npm run build
+$ npm run build-win
+$ npm run build-linux
+$ npm run build-osx
+```
+
+`npm run build-{platform}` will build the project for 64bit binaries
+
+Builds the app for OS X, Linux, and Windows, using [electron-packager](https://github.com/maxogden/electron-packager).

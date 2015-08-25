@@ -3,17 +3,24 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Template Generated Site</title>
-    <link type="text/css" rel="stylesheet" href="normalize.css"/>
-    <link type="text/css" rel="stylesheet" href="foundation.css"/>
+    <link type="text/css" rel="stylesheet" href="safe:SAFE_SERVICE.SAFE_PUBLIC/normalize.css"/>
+    <!--<link type="text/css" rel="stylesheet" href="safe:SAFE_SERVICE.SAFE_PUBLIC/foundation.css"/>-->
     <style>
         body {
             background-color: #F0F0F0;
             -webkit-user-select: none;
             overflow: hidden;
         }
+        .wrapper {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
         .template_banner {
             height: 50%;
-            background: url("bg.jpg");
+            background: url("safe:SAFE_SERVICE.SAFE_PUBLIC/bg.jpg");
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
@@ -27,7 +34,6 @@
             color: white;
             padding: 25px;
         }
-
         .template_content {
             height: 50%;
             padding: 5%;
@@ -39,15 +45,17 @@
     </style>
 </head>
 <body>
-    <div class="row-full template_banner">
+<div class="wrapper">
+    <div class="template_banner">
         <p>
             %s
         </p>
     </div>
-    <div class="row-full template_content">
+    <div class="template_content">
         <p>
             %s
         </p>
     </div>
+</div>
 </body>
 </html>

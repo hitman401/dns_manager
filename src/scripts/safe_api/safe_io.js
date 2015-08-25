@@ -4,7 +4,7 @@ var ArrayType = require('ref-array');
 var IntArray = ArrayType(ref.types.int);
 var fs = require('fs');
 
-var SafeIO = function() {
+var safeIo = (function() {
   var api;
 
   this.load = function(path) {
@@ -28,9 +28,7 @@ var SafeIO = function() {
   };
 
   return this;
-};
-
-var safeIo = new SafeIO();
+})();
 
 process.on('message', function(request) {
   var load = function(path) {

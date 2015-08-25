@@ -3,8 +3,10 @@ module.exports = function(onStart, onProgress, onComplete) {
   var path = require('path');
   var mime = require('mime');
 
-  var safeApi = require('../scripts/safe_api/api').safeAPI;
+  var safeApi = require('../scripts/safe_api/api');
+  var EXCEPTION_ERROR_CODE = 999;
 
+  // TODO can replace ProgessHanlder with Async.js
   var ProgressHandler = function(totalSize, callback) {
     var completed = 0;
     var alive = true;
@@ -18,7 +20,6 @@ module.exports = function(onStart, onProgress, onComplete) {
         callback ? callback(error) : function(){ /*no-op*/ };
         return;
       }
-      console.log('SIZE : ' + size);
       completed += size;
       var meter = (completed * 97.5) / totalSize;
       onProgress(meter);
@@ -28,16 +29,34 @@ module.exports = function(onStart, onProgress, onComplete) {
     };
   };
 
+  /**
+   * Creates a public directory in the network
+   * @param directoryPath
+   * @param callback
+   */
   var createDirectoryInNetwork = function(directoryPath, callback) {
     console.log('Creating directory ' + directoryPath);
     safeApi.createDirectory(directoryPath, callback);
   };
 
+  /**
+   * Writes file to the network
+   * @param localDirectory - Local directory to look for the file
+   * @param networkDirectory - Directory in the network to save the file
+   * @param fileName - Name of teh file
+   * @param size - Size of the file
+   * @param handler - ProgressHandler
+   */
   var writeFileToNetwork = function(localDirectory, networkDirectory, fileName, size, handler) {
     console.log("Creating file " + fileName + "  in " + networkDirectory);
     safeApi.createFile(networkDirectory, fileName, path.join(localDirectory, fileName), handler.update);
   };
 
+  /**
+   * Recursively computes the size of the directory
+   * @param folderPath
+   * @returns {number} size of the Directory
+   */
   var computeDirectorySize = function(folderPath) {
     var stats;
     var tmpPath;
@@ -55,6 +74,16 @@ module.exports = function(onStart, onProgress, onComplete) {
     return size;
   };
 
+  /**
+   * Upload the files after reading through the directory.
+   * For the root directory the networkDirectoryPath will be null and as it is called recursively the network path gets building
+   * Files can be created only after the directory is ready on the network. Thus, files are uploaded on the callback of
+   * createDirectoryInNetwork function
+   * @param folderPath - Local folder path
+   * @param handler - ProgressHandler
+   * @param networkDirectoryPath - Path of the directory in the network
+   */
+  // TODO simplify implementation - refactor
   var uploadFiles = function(folderPath, handler, networkDirectoryPath) {
     var stats;
     if(!networkDirectoryPath) {
@@ -84,6 +113,26 @@ module.exports = function(onStart, onProgress, onComplete) {
     }
   };
 
+  /**
+   * DNS registration is the last step after Uploading the files to the network
+   * @param errorCode
+   */
+  var registerDnsCallback = function(errorCode) {
+    if (errorCode !== 0) {
+      console.log('Registration FAILED :: ' + errorCode);
+      onComplete(err);
+    } else {
+      console.log('Registered Domain: safe:' + $('#service_name').val() + '.' + $('#public_name').val());
+      onComplete();
+    }
+  };
+
+  /**
+   * Entry point for uploading the files to the network
+   * Start Uploading teh directory to the network
+   * Callback for onStart, updatingProgress and onComplete will be triggered as the process is done
+   * @param folderPath
+   */
   var uploadFolder = function(folderPath) {
     var stats = fs.statSync(folderPath);
     if (!stats.isDirectory()) {
@@ -98,18 +147,10 @@ module.exports = function(onStart, onProgress, onComplete) {
           return;
         }
         try {
-          safeApi.registerDns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath), function(errorCode) {
-            if (errorCode !== 0) {
-              console.log('Registration FAILED :: ' + errorCode);
-              onComplete(err);
-            } else {
-              console.log('Registered Domain: safe:%s.%s with path %s', $('#service_name').val(), $('#public_name').val(), path.basename(folderPath));
-              onComplete();
-            }
-          });
+          safeApi.registerDns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath), registerDnsCallback);
         } catch (e) {
           console.log(e);
-          onComplete(999);
+          onComplete(EXCEPTION_ERROR_CODE);
         }
       });
       handler.update(null, 0);

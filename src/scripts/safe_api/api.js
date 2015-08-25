@@ -2,8 +2,14 @@ var SafeApi = function() {
   var path = require('path');
   var fs = require('fs');
 
-  var childProcess = require("child_process").fork(((__dirname.indexOf('asar') === -1) ? './src/scripts/safe_api' : __dirname) + '/safe_io');
+  var childProcess = require("child_process");
+  var safeApiRootFolder = ((__dirname.indexOf('asar') === -1) ? './src/scripts/safe_api' : __dirname);
+  var apiProcess = childProcess.fork(path.resolve(safeApiRootFolder, 'safe_io'));
 
+  /**
+   * Keeps track of the callback for the requests
+   * Callbacks are refered by a key
+   */
   var CallbackStore = {
     get: function(key) {
       return this[key]
@@ -16,30 +22,28 @@ var SafeApi = function() {
     }
   };
 
+  /**
+   * Returns the libary file path
+   * Here the unpacked library file from the asar file is retturned for a Packaged application, or normal path in developer mode
+   * @returns Library File path
+   */
   var getLibraryFileName = function() {
-    var fileName;
     var root = (__dirname.indexOf('asar') === -1) ? './src/scripts/safe_api/' : path.resolve(__dirname, '../../../../app.asar.unpacked/src/scripts/safe_api/');
-    if (/^win/.test(process.platform)) { // Windows
-      fileName = 'safe_ffi.dll';
-    } else if (/^darwin/.test(process.platform)) { // OSX
-      fileName = 'libsafe_ffi.dylib';
-    } else { // LINUX
-      fileName = 'libsafe_ffi.so';
-    }
-    return path.resolve(root, fileName);
+    return path.resolve(root, 'libsafe_ffi');
   };
 
-  childProcess.on('exit', function() {
+  apiProcess.on('exit', function() {
     console.log('Child Process Aborted');
   });
 
-  childProcess.on('message', function(msg) {
+  // Once the response is sent from the child process the appropiarte call back is retrieved and the the callback is invoked
+  apiProcess.on('message', function(msg) {
     if (!msg.postback) {
       console.log(msg);
       return;
     }
-    if (msg.error === 999) {
-      console.log(999 + ' : ' + msg.msg);
+    if (msg.error === 999) { // Exception error code is 999 from the safeIO
+      console.log('Exception : ' + msg.msg);
     }
     CallbackStore.get(msg.postback)(msg.error, msg.data);
     CallbackStore.delete(msg.postback);
@@ -47,16 +51,16 @@ var SafeApi = function() {
 
   this.createDirectory = function(directoryPath, callback) {
      CallbackStore.put(directoryPath, callback);
-     childProcess.send({
+     apiProcess.send({
        method: 'create_directory',
        directoryPath: directoryPath,
-       postback: directoryPath
+       postback: directoryPath //postback is a key which gets returned as a part of the response. This is used to identify the callback
      });
   };
 
   this.createFile = function(directoryPath, fileName, localFilePath, callback) {
     CallbackStore.put(directoryPath + fileName, callback);
-    childProcess.send({
+    apiProcess.send({
       method: 'create_file',
       directoryPath: directoryPath,
       fileName: fileName,
@@ -67,7 +71,7 @@ var SafeApi = function() {
 
   this.registerDns = function(publicName, serviceName, directoryPath, callback) {
     CallbackStore.put(serviceName + publicName, callback);
-    childProcess.send({
+    apiProcess.send({
       method: 'register_dns',
       publicName: publicName,
       serviceName: serviceName,
@@ -76,7 +80,8 @@ var SafeApi = function() {
     });
   };
 
-  childProcess.send({
+  // Initialise the ffi loading before any operation is called
+  apiProcess.send({
     method: 'init',
     libPath: getLibraryFileName()
   });
@@ -84,4 +89,4 @@ var SafeApi = function() {
   return this;
 };
 
-exports.safeAPI = new SafeApi();
+module.exports = new SafeApi();

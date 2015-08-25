@@ -9,6 +9,9 @@ window.$ = window.jQuery = require('../scripts/jquery.js');
 // Disable Menu bar
 Menu.setApplicationMenu(null);
 
+/*
+ * Display error below the input field
+ */
 var showError = function(id, msg) {
   var pos = $('#' + id).offset();
   var errorElement = $('.error');
@@ -27,20 +30,28 @@ var validate = function() {
   if (serviceName && publicName) {
     return true;
   } else if(!serviceName) {
-    showError('service_name', 'Service Name should be filled');
+    showError('service_name', 'Service Name cannot be empty');
   } else if(!publicName) {
-    showError('public_name', 'Public Name should be filled');
+    showError('public_name', 'Public Name cannot be empty');
   }
   return false;
 };
 
-var register = function() {
+/**
+ * Invoked on clicking the Upload files button.
+ * Validates the input and moves to the next section
+ */
+var validateInput = function() {
   if(!validate()) {
     return;
   }
   showSection('step-2');
 };
 
+/**
+ * Shows the section corresponding to the id.
+ * @param id
+ */
 var showSection = function(id) {
   var tmp;
   var hideClass = 'hide';
@@ -119,15 +130,24 @@ var resetTemplate = function() {
 };
 
 
+var onUploadStarted = function() {
+  showSection('step-3');
+};
+var updateProgressBar = function(meter) {
+  $('.indicator div.meter').css('width', meter + '%');
+};
+var onUploadComplete = function(err) {
+  showSection(err ? 'failure': 'success');
+};
+
+/**
+ * Invoked to register the Drag and Drop Region
+ * @param id - to enable drag and drop of files
+ */
 var registerDragRegion = function(id) {
-  var helper = new UploadHelper(function() { // onstarted
-    showSection('step-3');
-  },function(meter) { // Progress Update
-    $('.indicator div.meter').css('width', meter + '%');
-  }, function(err) { // done
-    showSection(err ? 'failure': 'success');
-  });
-  var holder = document.getElementById(id);
+  var helper;
+  var holder;
+  holder = document.getElementById(id);
   holder.ondragover = function () { this.className = 'hover'; return false; };
   holder.ondragleave = function () { this.className = ''; return false; };
   holder.ondrop = function (e) {
@@ -135,42 +155,53 @@ var registerDragRegion = function(id) {
     if (e.dataTransfer.files.length === 0) {
       return false;
     }
+    helper = new UploadHelper(onUploadStarted, updateProgressBar, onUploadComplete);
     helper.uploadFolder(e.dataTransfer.files[0].path);
     return false;
   };
 };
 
+/**
+ * The template is generated from the `/views/template` by replacing the the edited title and description.
+ * The dependencies for the page such as normalize.css and bg.jpg are copied along with the genarted template to a temp Directory.
+ * The temp directory is finally passed for Uploading to the network
+ */
 var publishTemplate = function() {
   var path = require('path');
   var temp = require('temp').track();
-  var title = $('#template_title_input').val();
-  var content = $('#template_content_input').val();
   var fs = require('fs');
   var util = require('util');
+
+  var tempDirName = 'safe_uploader_template';
+  var title = $('#template_title_input').val();
+  var content = $('#template_content_input').val();
   var serviceName = $('#service_name').val();
   var publicName = $('#public_name').val();
-  try {
-    var root = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
-    var templateString = fs.readFileSync(path.resolve(root, 'views/template.html')).toString();
-    var tempDirPath = temp.mkdirSync('safe_uploader_template');
+  var templateDependencies = {
+    'bg.jpg': 'imgs/phone_purple.jpg',
+    'normalize.css': 'bower_components/bower-foundation5/css/normalize.css',
+    'foundation.css': 'bower_components/bower-foundation5/css/foundation.css'
+  };
 
+  try {
+    var tempDirPath = temp.mkdirSync(tempDirName);
+
+    var root = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
+    // Save the template in the temp Directory
+    var templateString = fs.readFileSync(path.resolve(root, 'views/template.html')).toString();
     fs.writeFileSync(path.resolve(tempDirPath, 'index.html'),
         util.format(templateString.replace(/SAFE_SERVICE/g, serviceName).replace(/SAFE_PUBLIC/g, publicName), title, content));
-    var buff = fs.readFileSync(path.resolve(root, 'imgs/phone_purple.jpg'));
-    fs.writeFileSync(path.resolve(tempDirPath, 'bg.jpg'), buff);
-    buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/normalize.css'));
-    fs.writeFileSync(path.resolve(tempDirPath, 'normalize.css'), buff);
-    buff = fs.readFileSync(path.resolve(root, 'bower_components/bower-foundation5/css/foundation.css'));
-    fs.writeFileSync(path.resolve(tempDirPath, 'foundation.css'), buff);
+    // Save the template dependencies
+    var buff;
+    for (var key in templateDependencies) {
+      buff = fs.readFileSync(path.resolve(root, templateDependencies[key]));
+      fs.writeFileSync(path.resolve(tempDirPath, key), buff);
+    }
+    // Values edited in the template are reset to defaults
     resetTemplate();
-    showSection('step-3');
-    new UploadHelper(function() { // onstarted
-      showSection('step-3');
-    },function(meter) { // Progress Update
-      $('.indicator div.meter').css('width', meter + '%');
-    }, function(err) { // done
-      showSection(err ? 'failure': 'success');
-    }).uploadFolder(tempDirPath);
+    // Start upload
+    var helper = new UploadHelper(onUploadStarted, updateProgressBar, onUploadComplete);
+    helper.uploadFolder(tempDirPath);
   } catch(e) {
     console.log(e.message);
     showSection('failure');

@@ -1,21 +1,20 @@
+// Electron UI Variable initialization
 var remote = require('remote');
 var Menu = remote.require('menu');
+// Nodejs and Application Variable initialization
 var path = require('path');
-
 var appSrcFolderPath = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
-var UploadHelper = require('../scripts/file_handler');
-
+var Uploader = require('../scripts/uploader');
 var serviceName;
 var publicName;
-
-// TODO fetch from bower components itself
+// Registering Jquery Electron Way
+// TODO fetch from bower components
 window.$ = window.jQuery = require('../scripts/jquery.js');
-// TODO Inject the error HTML from Code itself
 // TODO use jquery hide and show methods instead of adding classes
 // Disable Menu bar
 Menu.setApplicationMenu(null);
 
-/*
+/**
  * Display error below the input field
  */
 var showError = function(id, msg) {
@@ -30,6 +29,10 @@ var showError = function(id, msg) {
   }, 3000);
 };
 
+/**
+ * Validates service name and public name
+ * @returns {boolean}
+ */
 var validate = function() {
   var serviceNameElement = document.getElementById('service_name');
   var publicNameElement = document.getElementById('public_name');
@@ -45,6 +48,9 @@ var validate = function() {
   return false;
 };
 
+/**
+ * Clears the Publicname and service Name fields
+ */
 var clearServiceAndPublicName = function() {
   $('#service_name').val('');
   $('#public_name').val('');
@@ -102,12 +108,15 @@ document.addEventListener('drop', function(e){
   e.stopPropagation();
 }, false);
 
+/** Uploader Callback - when the upload starts **/
 var onUploadStarted = function() {
   showSection('step-3');
 };
+/** Uploader Callback - Updating progress bar **/
 var updateProgressBar = function(meter) {
   $('.indicator div.meter').css('width', meter + '%');
 };
+/** Uploader Callback - when the upload is completed **/
 var onUploadComplete = function(errorCode) {
   showSection(errorCode ? 'failure': 'success');
   if (!errorCode) {
@@ -142,7 +151,7 @@ var registerDragRegion = function(id) {
     if (e.dataTransfer.files.length === 0) {
       return false;
     }
-    helper = new UploadHelper(onUploadStarted, updateProgressBar, onUploadComplete);
+    helper = new Uploader(onUploadStarted, updateProgressBar, onUploadComplete);
     helper.uploadFolder(serviceName, publicName, e.dataTransfer.files[0].path);
     return false;
   };
@@ -183,16 +192,13 @@ var publishTemplate = function() {
     //// Values edited in the template are reset to defaults
     resetTemplate();
     //// Start upload
-    var helper = new UploadHelper(onUploadStarted, updateProgressBar, onUploadComplete);
+    var helper = new Uploader(onUploadStarted, updateProgressBar, onUploadComplete);
     helper.uploadFolder(serviceName, publicName, tempDirPath);
   } catch(e) {
     console.log(e.message);
     showSection('failure');
   }
 };
-
-registerDragRegion('drag_drop');
-
 
 /**** Template Updation functions *****/
 $('#template_title_input').focusout(function() {
@@ -231,3 +237,7 @@ var resetTemplate = function() {
   $('#template_content').html("This page is created and published on the SAFE Network using the SAFE Uploader");
   $('#template_content_input').val("This page is created and published on the SAFE Network using the SAFE Uploader");
 };
+
+/*****  Initialisation ***********/
+registerDragRegion('drag_drop');
+$('#service_name').focus();

@@ -18,7 +18,7 @@ $ npm install
 $ npm rebuild
 ```
 
-`./node_modules/.bin/electron_build` will rebuild the native modules
+`./node_modules/.bin/electron-rebuild` will rebuild the native modules
 
 ### Run
 

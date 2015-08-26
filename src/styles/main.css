@@ -133,19 +133,18 @@ button.btn_template {
 .indicator {
     position: absolute;
     width: 100%;
-    margin-top: 10%;
-    left: 0px;
+    left: 0;
     height: 8px;
     background-color: #4166B1;
     border-radius: 10px;
+    margin: 10% 0 0 0;
+    padding: 2px;
 }
 .meter {
-    position: absolute;
-    width: 0px;
+    width: 1px;
     height: 4px;
     background-color: white;
     border-radius: 10px;
-    margin: 2px -13px;
 }
 
 .error {

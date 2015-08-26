@@ -21,7 +21,7 @@ module.exports = function(onStart, onProgress, onComplete) {
         return;
       }
       completed += size;
-      var meter = (completed * 97.5) / totalSize;
+      var meter = (completed * 100) / totalSize;
       onProgress(meter);
       if (completed === totalSize) {
         callback ? callback() : function(){ /*no-op*/ };

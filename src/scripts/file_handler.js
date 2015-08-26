@@ -120,7 +120,7 @@ module.exports = function(onStart, onProgress, onComplete) {
   var registerDnsCallback = function(errorCode) {
     if (errorCode !== 0) {
       console.log('Registration FAILED :: ' + errorCode);
-      onComplete(err);
+      onComplete(errorCode);
     } else {
       console.log('Registered Domain: safe:' + $('#service_name').val() + '.' + $('#public_name').val());
       onComplete();

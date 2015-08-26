@@ -42,6 +42,11 @@ var validate = function() {
   return false;
 };
 
+var clearServiceAndPublicName = function() {
+  $('#service_name').val('');
+  $('#public_name').val('');
+};
+
 /**
  * Invoked on clicking the Upload files button.
  * Validates the input and moves to the next section
@@ -77,8 +82,8 @@ var showSection = function(id) {
 };
 
 //if (package_config.window.frame) {
-  $('header').remove();
-  $('body').css('border-width', '0px');
+//  $('header').remove();
+//  $('body').css('border-width', '0px');
 //}
 
 /**
@@ -101,8 +106,22 @@ var onUploadStarted = function() {
 var updateProgressBar = function(meter) {
   $('.indicator div.meter').css('width', meter + '%');
 };
-var onUploadComplete = function(err) {
-  showSection(err ? 'failure': 'success');
+var onUploadComplete = function(errorCode) {
+  showSection(errorCode ? 'failure': 'success');
+  clearServiceAndPublicName();
+  if (!errorCode) {
+    return;
+  }
+  var reason;
+  switch (errorCode) {
+    case -1001:
+      reason = 'Service Name and Public Name Already Registered';
+      break;
+
+    default:
+      reason = "Opps! Something went wrong";
+  }
+  $('#error_msg').html(reason);
 };
 
 /**

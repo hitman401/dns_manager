@@ -11,22 +11,23 @@ Build the [Safe_ffi](https://github.com/ustulation/safe_ffi/tree/master/rust) ru
 Place the library in the `src/scripts/safe_api` folder
 
 
-## Dev
+## Development
 
+After cloning the repository, install npm and bower dependencies.
 ```
 $ npm install
-$ npm rebuild
+$ bower install
 ```
 
-`./node_modules/.bin/electron-rebuild` will rebuild the native modules
+Rebuild the native dependencies with electron-rebuild by executing, `./node_modules/.bin/electron-rebuild`
 
-### Run
+### Run the code
 
 ```
 $ npm start
 ```
 
-### Build
+### Package the application
 
 ```
 $ npm run build

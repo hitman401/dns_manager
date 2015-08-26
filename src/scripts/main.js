@@ -28,14 +28,16 @@ var showError = function(id, msg) {
 };
 
 var validate = function() {
-  var serviceName = document.getElementById('service_name').checkValidity();
-  var publicName = document.getElementById('public_name').checkValidity();
-  if (serviceName && publicName) {
+  var serviceNameElement = document.getElementById('service_name');
+  var publicNameElement = document.getElementById('public_name');
+  if (serviceNameElement.checkValidity() && publicNameElement.checkValidity() && publicNameElement.value.indexOf('.') === -1) {
     return true;
-  } else if(!serviceName) {
+  } else if(!serviceNameElement.checkValidity()) {
     showError('service_name', 'Service Name cannot be empty');
-  } else if(!publicName) {
+  } else if(!publicNameElement.checkValidity()) {
     showError('public_name', 'Public Name cannot be empty');
+  } else if (publicNameElement.value.indexOf('.') > -1) {
+    showError('public_name', 'Public Name cannot contain "."');
   }
   return false;
 };

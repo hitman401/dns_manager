@@ -185,9 +185,14 @@ button.btn_template {
     padding: 25px;
 }
 
+#template input {
+    text-align: center;
+}
+
 #edit_template_title {
     padding: 20px;
 }
+
 
 #template_title_input {
     background: transparent;

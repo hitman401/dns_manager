@@ -122,7 +122,6 @@ module.exports = function(onStart, onProgress, onComplete) {
       console.log('Registration FAILED :: ' + errorCode);
       onComplete(errorCode);
     } else {
-      console.log('Registered Domain: safe:' + $('#service_name').val() + '.' + $('#public_name').val());
       onComplete();
     }
   };
@@ -133,7 +132,7 @@ module.exports = function(onStart, onProgress, onComplete) {
    * Callback for onStart, updatingProgress and onComplete will be triggered as the process is done
    * @param folderPath
    */
-  var uploadFolder = function(folderPath) {
+  var uploadFolder = function(serviceName, publicName, folderPath) {
     var stats = fs.statSync(folderPath);
     if (!stats.isDirectory()) {
       alert('Drag and drop a directory!');
@@ -147,7 +146,7 @@ module.exports = function(onStart, onProgress, onComplete) {
           return;
         }
         try {
-          safeApi.registerDns($('#public_name').val(), $('#service_name').val(), path.basename(folderPath), registerDnsCallback);
+          safeApi.registerDns(publicName, serviceName, path.basename(folderPath), registerDnsCallback);
         } catch (e) {
           console.log(e);
           onComplete(EXCEPTION_ERROR_CODE);

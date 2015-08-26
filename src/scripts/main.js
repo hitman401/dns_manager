@@ -5,6 +5,9 @@ var path = require('path');
 var appSrcFolderPath = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
 var UploadHelper = require('../scripts/file_handler');
 
+var serviceName;
+var publicName;
+
 // TODO fetch from bower components itself
 window.$ = window.jQuery = require('../scripts/jquery.js');
 // TODO Inject the error HTML from Code itself
@@ -55,7 +58,10 @@ var validateInput = function() {
   if(!validate()) {
     return;
   }
+  serviceName = $('#service_name').val();
+  publicName = $('#public_name').val();
   showSection('step-2');
+  clearServiceAndPublicName();
 };
 
 /**
@@ -81,10 +87,6 @@ var showSection = function(id) {
   }
 };
 
-//if (package_config.window.frame) {
-//  $('header').remove();
-//  $('body').css('border-width', '0px');
-//}
 
 /**
  *  Dragover and drop is disabled on document.
@@ -108,8 +110,9 @@ var updateProgressBar = function(meter) {
 };
 var onUploadComplete = function(errorCode) {
   showSection(errorCode ? 'failure': 'success');
-  clearServiceAndPublicName();
   if (!errorCode) {
+    $('#success_msg').html('Files Uploaded! Access the files from firefox, <b><i>safe:' +
+        serviceName + '.' + publicName + '</i></b>');
     return;
   }
   var reason;
@@ -119,7 +122,7 @@ var onUploadComplete = function(errorCode) {
       break;
 
     default:
-      reason = "Opps! Something went wrong";
+      reason = "Oops! Something went wrong";
   }
   $('#error_msg').html(reason);
 };
@@ -140,7 +143,7 @@ var registerDragRegion = function(id) {
       return false;
     }
     helper = new UploadHelper(onUploadStarted, updateProgressBar, onUploadComplete);
-    helper.uploadFolder(e.dataTransfer.files[0].path);
+    helper.uploadFolder(serviceName, publicName, e.dataTransfer.files[0].path);
     return false;
   };
 };
@@ -158,8 +161,6 @@ var publishTemplate = function() {
   var tempDirName = 'safe_uploader_template';
   var title = $('#template_title_input').val();
   var content = $('#template_content_input').val();
-  var serviceName = $('#service_name').val();
-  var publicName = $('#public_name').val();
   var templateDependencies = {
     'bg.jpg': 'imgs/phone_purple.jpg',
     'normalize.css': 'bower_components/bower-foundation5/css/normalize.css'
@@ -183,7 +184,7 @@ var publishTemplate = function() {
     resetTemplate();
     //// Start upload
     var helper = new UploadHelper(onUploadStarted, updateProgressBar, onUploadComplete);
-    helper.uploadFolder(tempDirPath);
+    helper.uploadFolder(serviceName, publicName, tempDirPath);
   } catch(e) {
     console.log(e.message);
     showSection('failure');

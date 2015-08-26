@@ -12,7 +12,7 @@ var SafeApi = function() {
    */
   var CallbackStore = {
     get: function(key) {
-  1    return this[key]
+      return this[key]
     },
     delete: function(key) {
       delete this[key];

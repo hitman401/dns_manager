@@ -10,7 +10,6 @@ var publicName;
 // Registering Jquery Electron Way
 // TODO fetch from bower components
 window.$ = window.jQuery = require('../scripts/jquery.js');
-// TODO use jquery hide and show methods instead of adding classes
 // Disable Menu bar
 Menu.setApplicationMenu(null);
 
@@ -201,29 +200,40 @@ var publishTemplate = function() {
 };
 
 /**** Template Updation functions *****/
+var toggleDisplay = function(elementIdToHide, elementIdToShow) {
+  $('#' + elementIdToHide).addClass('hide');
+  $('#' + elementIdToShow).removeClass('hide');
+};
+
 $('#template_title_input').focusout(function() {
-  $('#edit_template_title').addClass('hide');
-  $('#template_title').removeClass('hide');
+  toggleDisplay('edit_template_title', 'template_title');
+});
+
+$('#template_title_input').keypress(function(e) {
+  if (e.which === 13) {
+    toggleDisplay('edit_template_title', 'template_title');
+  }
 });
 
 var editTemplateTitle = function() {
-  $('#template_title').addClass('hide');
-  $('#edit_template_title').removeClass('hide');
+  toggleDisplay('template_title', 'edit_template_title');
   $('#template_title_input').focus();
 };
 
 var updateTemplateTitle = function(value) {
   $('#template_title').html(value);
 };
-
+$('#template_content_input').keypress(function(e) {
+  if (e.which === 13) {
+    toggleDisplay('edit_template_content', 'template_content');
+  }
+});
 $('#template_content_input').focusout(function() {
-  $('#edit_template_content').addClass('hide');
-  $('#template_content').removeClass('hide');
+  toggleDisplay('edit_template_content', 'template_content');
 });
 
 var editTemplateContent = function() {
-  $('#template_content').addClass('hide');
-  $('#edit_template_content').removeClass('hide');
+  toggleDisplay('template_content', 'edit_template_content');
   $('#template_content_input').focus();
 };
 

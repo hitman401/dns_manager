@@ -1,36 +1,41 @@
 body {
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans-serif;
     /*border: 2px solid #5081aa;*/
     background-color: #F0F0F0;
     -webkit-user-select: none;
     overflow: hidden;
 }
-header {
+nav {
     height: 32px;
     background-color: #5081aa;
     color: white;
-    -webkit-app-region: drag;
+    position: fixed;
+    width: 100%;
+    z-index: 999;
 }
-header div.title {
-    font-weight: 100;
-    padding: 12px 10px 0px;
+
+nav div.back {
+    padding: 5px 15px;
 }
-header ul {
-    list-style-type: none !important;
-    padding: 0px;
-    margin: 0px;
+
+nav div.back img:hover {
+    cursor: pointer;
 }
-header  ul > li {
-    text-align: center;
-    float: left;
-    width: 33%;
-    height: 40px;
-    padding: 7px;
-    -webkit-app-region: no-drag;
+
+nav div.title {
+    font-style: normal;
+    font-size: 18px;
+    padding: 5px 0;
 }
+
 button, button:hover, button:focus {
     background-color: #5081aa;
     color: white;
+    height: 32px;
+    font-size: 18px;
+    padding: 2px;
+    width: 138px;
+    font-weight: normal;
 }
 input {
     height: 33px;
@@ -48,23 +53,31 @@ section {
     width: 100%;
     bottom: 0;
 }
+nav div.publish {
+    padding: 7px 0;
+}
+
 .centered-layout {
-    padding: 10%;
+    margin: 160px 0 15px 0;
 }
 .margin-25-vertical {
     margin: 25px 0;
 }
 p.header {
-    font: normal normal 400 31px/37px 'Open Sans';
+    font: normal normal 300 32px/37px 'Open Sans';
+    margin-bottom: 15px;
 }
 p.description {
     font: normal normal normal 18px/22px 'Open Sans';
+    margin: 0 0 0 0;
 }
 #registration {
-    margin: 40px auto 50px;
+    margin: 25px 0 55px;
 }
 #registration input {
+    height: 32px;
     font: normal normal normal 19px 'Open Sans';
+    border-width: 2px;
 }
 #registration input:focus {
     border: 1px solid #5081aa;
@@ -72,7 +85,9 @@ p.description {
 #registration span.scheme {
     display: inherit;
     margin: 10px auto;
-    font-weight: 600;
+    font-weight: normal;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
 }
 #registration input#service_name {
     width: calc(100% - 20px);
@@ -86,7 +101,7 @@ p.description {
     display: inherit;
     width: 5px;
     float: left;
-    margin: 5px 0px 0px;
+    margin: 0;
     font-weight: bold;
     font-size: 30px;
 }
@@ -94,41 +109,38 @@ p.description {
     display: none !important;
 }
 button.btn_template {
-    margin-top: 40px;
+    margin-top: 47px;
 }
-@-webkit-keyframes pulse {
-    0%   {border-width: 1px;}
-    100% {border-width: 2px;}
+
+.margin-top-50 {
+    margin-top: 50px;
 }
-.outer-circle {
-    width: 150px;
-    height: 150px;
-    border: 1px solid #5081aa;
-    border-radius: 50%;
-    /*-webkit-animation-name: pulse;*/
-    /*-webkit-animation-duration: 1s;*/
-    /*-webkit-animation-iteration-count: infinite;*/
+
+.margin-top-110 {
+    margin-top: 110px;
 }
-.inner-circle {
-    margin: 24px;
-    width: 100px;
-    height: 100px;
-    border: 2px solid #5081aa;
-    border-radius: 50%;
-    /*-webkit-animation-name: pulse;*/
-    /*-webkit-animation-duration: 1s;*/
-    /*-webkit-animation-direction: reverse;*/
-    /*-webkit-animation-iteration-count: infinite;*/
-}
-.inner-circle > div.holder {
+div.holder {
     width: 66px;
-    margin: 16px;
+    margin: 33px 0;
 }
-.inner-circle > div.holder > img {
+div.holder > img {
     content: url("../imgs/upload_static.png");
 }
-.inner-circle > div.holder:hover > img {
+div.holder:hover > img {
     content: url("../imgs/upload_drag_hover.png");
+}
+#success img, #failure img {
+    margin-top: 17px;
+    margin-bottom: 32px;
+}
+#success a {
+    color: #21577c;
+}
+#success button, #failure button {
+    margin-top: 95px;
+}
+.no-margin {
+    margin: 0 !important;
 }
 .indicator {
     position: absolute;
@@ -146,7 +158,6 @@ button.btn_template {
     background-color: white;
     border-radius: 10px;
 }
-
 .error {
     position: fixed;
     display: none;
@@ -166,15 +177,14 @@ button.btn_template {
     background-color: #ff7676;
     color: #fff;
 }
-
 .template_banner {
-    height: 50%;
-    background: url("../imgs/phone_purple.jpg");
+    margin-top: 32px;
+    height: 65%;
+    background: url("../imgs/dns_bg.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     padding: 0;
-    margin: 0;
 }
 .template_banner p {
     font-size: 20px;
@@ -183,49 +193,26 @@ button.btn_template {
     color: white;
     padding: 25px;
 }
-
 #template input {
     text-align: center;
 }
-
 #edit_template_title {
     padding: 20px;
 }
-
-
 #template_title_input {
     background: transparent;
     color: white;
     font-weight: bold;
     border-radius: 6px;
 }
-
 .template_content {
-    height: 40%;
+    height: calc(35% - 32px);
     padding: 5%;
 }
 .template_content p {
     font-size: 25px;
     text-align: center;
 }
-.template_footer {
-    position: absolute;
-    height: 45px;
-    width: 100%;
-    bottom: 0px;
-    background-color: #5081aa;
-}
-.template_footer div {
-    color: white;
-    margin: 15px 2%;
-    float: right;
-}
-
-
-.template_banner p:hover, .template_footer div:hover, .template_content p {
+nav div.back:hover, nav div.publish:hover, .template_banner p:hover, .template_footer div:hover, .template_content p {
     cursor: pointer;
-}
-
-.template_footer div:nth-child(1) {
-    float: left;
 }

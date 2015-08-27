@@ -7,8 +7,7 @@ var appSrcFolderPath = (__dirname.indexOf('asar') === -1) ? path.resolve('src') 
 var Uploader = require('../scripts/uploader');
 var serviceName;
 var publicName;
-// Registering Jquery Electron Way
-// TODO fetch from bower components
+// Registering Jquery - Electron Way
 window.$ = window.jQuery = require('../scripts/jquery.js');
 // Disable Menu bar
 Menu.setApplicationMenu(null);

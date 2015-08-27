@@ -16,7 +16,6 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . Safe_Uploader --out=dist --ignore=dist --prune --asar --all --version=0.30.0 --overwrite",
     "build-win": "electron-packager . Safe_uploader --out=dist --ignore=dist --prune --asar --asar_unpack=*.dll --platform=win32 --arch=x64 --version=0.30.0 --overwrite",
     "build-linux": "electron-packager . Safe_uploader --out=dist --ignore=dist --prune --asar --asar_unpack=*.so --platform=linux --arch=x64 --version=0.30.0 --overwrite",
     "build-osx": "electron-packager . Safe_uploader --out=dist --ignore=dist --prune --asar --asar_unpack=*.dylib --platform=darwin --arch=x64 --version=0.30.0 --overwrite"

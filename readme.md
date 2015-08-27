@@ -30,7 +30,6 @@ $ npm start
 ### Package the application
 
 ```
-$ npm run build
 $ npm run build-win
 $ npm run build-linux
 $ npm run build-osx

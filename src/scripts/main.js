@@ -1,6 +1,7 @@
 // Electron UI Variable initialization
 var remote = require('remote');
 var Menu = remote.require('menu');
+var shell = require('shell');
 // Nodejs and Application Variable initialization
 var path = require('path');
 var appSrcFolderPath = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
@@ -11,6 +12,55 @@ var publicName;
 window.$ = window.jQuery = require('../scripts/jquery.js');
 // Disable Menu bar
 Menu.setApplicationMenu(null);
+
+// Navigation States
+var AppNavigator = {
+  current: '',
+  states: {
+    'step-2': 'step-1',
+    'template': 'step-2'
+  },
+  visibleOn: ['step-2', 'template'],
+  showPublish: ['template'],
+  ui: {
+    nav: null,
+    backElement: null,
+    titleElement: null,
+    publishElement: null
+  },
+  update: function(id) {
+    this.current = id;
+    if (this.visibleOn.indexOf(this.current) === -1) {
+      this.ui.nav.hide();
+      return;
+    }
+    if (this.showPublish.indexOf(this.current) > -1) {
+      this.ui.publishElement.show();
+    } else {
+      this.ui.publishElement.hide();
+    }
+    this.ui.nav.show();
+  },
+  back: function() {
+    showSection(this.states[this.current]);
+  },
+  init: function(initialState) {
+    this.ui.nav = $('nav');
+    this.ui.backElement = $('nav div.back');
+    this.ui.titleElement = $('nav div.title');
+    this.ui.publishElement = $('nav div.publish');
+    this.update(initialState);
+  }
+};
+
+var goBack = function() {
+  AppNavigator.back();
+};
+
+var openExternal = function(url) {
+  debugger
+  shell.openExternal(url);
+};
 
 /**
  * Display error below the input field
@@ -88,7 +138,8 @@ var showSection = function(id) {
     if (!tmp.hasClass(hideClass)) {
       tmp.addClass(hideClass);
     }
-  }
+  };
+  AppNavigator.update(id);
 };
 
 
@@ -118,8 +169,8 @@ var updateProgressBar = function(meter) {
 var onUploadComplete = function(errorCode) {
   showSection(errorCode ? 'failure': 'success');
   if (!errorCode) {
-    $('#success_msg').html('Files Uploaded! Access the files from firefox, <b><i>safe:' +
-        serviceName + '.' + publicName + '</i></b>');
+    var endPoint = 'safe:' +  serviceName + '.' + publicName;
+    $('#success_msg').html('Files Uploaded to <a onclick="openExternal(\'' + endPoint + '\')">' + endPoint + '</a>');
     return;
   }
   var reason;
@@ -169,7 +220,7 @@ var publishTemplate = function() {
   var title = $('#template_title_input').val();
   var content = $('#template_content_input').val();
   var templateDependencies = {
-    'bg.jpg': 'imgs/phone_purple.jpg',
+    'bg.jpg': 'imgs/dns_bg.jpg',
     'normalize.css': 'bower_components/bower-foundation5/css/normalize.css'
     //'foundation.css': 'bower_components/bower-foundation5/css/foundation.css'
   };
@@ -247,6 +298,8 @@ var resetTemplate = function() {
   $('#template_content_input').val("This page is created and published on the SAFE Network using the SAFE Uploader");
 };
 
+
 /*****  Initialisation ***********/
+AppNavigator.init('step-1');
 registerDragRegion('drag_drop');
 $('#service_name').focus();

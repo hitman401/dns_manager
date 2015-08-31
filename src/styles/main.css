@@ -13,7 +13,6 @@ nav {
     width: 100%;
     z-index: 999;
 }
-
 nav div.back {
     padding: 5px 15px;
 }
@@ -27,7 +26,6 @@ nav div.title {
     font-size: 18px;
     padding: 5px 0;
 }
-
 button, button:hover, button:focus {
     background-color: #5081aa;
     color: white;
@@ -40,6 +38,9 @@ button, button:hover, button:focus {
 input {
     height: 33px;
     font-size: 19px;
+}
+a {
+    color: #21577c;
 }
 .no-pad {
     padding: 0;
@@ -54,7 +55,7 @@ section {
     bottom: 0;
 }
 nav div.publish {
-    padding: 7px 0;
+    padding: 7px 0 0 0;
 }
 
 .centered-layout {

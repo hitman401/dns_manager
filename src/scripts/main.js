@@ -336,6 +336,7 @@ var resetTemplate = function() {
   var element = $('.template_banner');
   element.css('background', 'url(../imgs/dns_bg.jpg)');
   element.css('background-size', 'cover');
+  element.css('background-position', 'center');
 };
 
 var onFileSelected = function(filePath) {
@@ -348,6 +349,7 @@ var onFileSelected = function(filePath) {
   var element = $('.template_banner');
   element.css('background', 'url(data:' + mimeType +';base64,' + fs.readFileSync(filePath).toString('base64') + ')');
   element.css('background-size', 'cover');
+  element.css('background-position', 'center');
 };
 
 var pickFile = function() {

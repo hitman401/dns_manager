@@ -31,6 +31,9 @@ var AppNavigator = {
     }
   },
   onLoad: {
+    'step-2': function() {
+      $('nav div.title').html('safe:' + serviceName + '.' + publicName);
+    },
     'template': function() {
       resetTemplate()
     }

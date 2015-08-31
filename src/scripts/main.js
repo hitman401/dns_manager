@@ -1,17 +1,89 @@
 // Electron UI Variable initialization
 var remote = require('remote');
 var Menu = remote.require('menu');
+var shell = remote.require('shell');
+var dialog = remote.require('dialog');
+
 // Nodejs and Application Variable initialization
 var path = require('path');
+var mime = require('mime');
+var fs = require('fs');
 var appSrcFolderPath = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
 var Uploader = require('../scripts/uploader');
 var serviceName;
 var publicName;
-// Registering Jquery Electron Way
-// TODO fetch from bower components
+var tempBackgroundFilePath;
+// Registering Jquery - Electron Way
 window.$ = window.jQuery = require('../scripts/jquery.js');
 // Disable Menu bar
 Menu.setApplicationMenu(null);
+
+// Navigation States
+var AppNavigator = {
+  current: '',
+  states: {
+    'step-2': 'step-1',
+    'template': 'step-2'
+  },
+  onBack: {
+    'template': function() {
+      resetTemplate()
+    }
+  },
+  onLoad: {
+    'step-2': function() {
+      $('nav div.title').html('safe:' + serviceName + '.' + publicName);
+    },
+    'template': function() {
+      resetTemplate()
+    }
+  },
+  visibleOn: ['step-2', 'template'],
+  showPublish: ['template'],
+  ui: {
+    nav: null,
+    backElement: null,
+    titleElement: null,
+    publishElement: null
+  },
+  update: function(id) {
+    this.current = id;
+    if (this.visibleOn.indexOf(this.current) === -1) {
+      this.ui.nav.hide();
+      return;
+    }
+    if (this.showPublish.indexOf(this.current) > -1) {
+      this.ui.publishElement.show();
+    } else {
+      this.ui.publishElement.hide();
+    }
+    this.ui.nav.show();
+    if (this.onLoad[this.current]) {
+      this.onLoad[this.current]();
+    }
+  },
+  back: function() {
+    if (this.onBack[this.current]) {
+      this.onBack[this.current]();
+    }
+    showSection(this.states[this.current]);
+  },
+  init: function(initialState) {
+    this.ui.nav = $('nav');
+    this.ui.backElement = $('nav div.back');
+    this.ui.titleElement = $('nav div.title');
+    this.ui.publishElement = $('nav div.publish');
+    this.update(initialState);
+  }
+};
+
+var goBack = function() {
+  AppNavigator.back();
+};
+
+var openExternal = function(url) {
+  shell.openExternal(url);
+};
 
 /**
  * Display error below the input field
@@ -89,7 +161,8 @@ var showSection = function(id) {
     if (!tmp.hasClass(hideClass)) {
       tmp.addClass(hideClass);
     }
-  }
+  };
+  AppNavigator.update(id);
 };
 
 
@@ -119,8 +192,8 @@ var updateProgressBar = function(meter) {
 var onUploadComplete = function(errorCode) {
   showSection(errorCode ? 'failure': 'success');
   if (!errorCode) {
-    $('#success_msg').html('Files Uploaded! Access the files from firefox, <b><i>safe:' +
-        serviceName + '.' + publicName + '</i></b>');
+    var endPoint = 'safe:' +  serviceName + '.' + publicName;
+    $('#success_msg').html('Files Uploaded to <a onclick="openExternal(\'' + endPoint + '\')">' + endPoint + '</a>');
     return;
   }
   var reason;
@@ -156,6 +229,17 @@ var registerDragRegion = function(id) {
   };
 };
 
+var getTemplateBackgroundFile = function() {
+  var backgroundFile;
+  if (tempBackgroundFilePath) {
+    backgroundFile = { 'name' : path.basename(tempBackgroundFilePath), 'path': tempBackgroundFilePath };
+  } else {
+    backgroundFile = { 'name': 'bg.jpg', 'path': 'imgs/dns_bg.jpg'};
+  }
+  tempBackgroundFilePath = '';
+  return backgroundFile;
+};
+
 /**
  * The template is generated from the `/views/template` by replacing the the edited title and description.
  * The dependencies for the page such as normalize.css and bg.jpg are copied along with the genarted template to a temp Directory.
@@ -170,7 +254,6 @@ var publishTemplate = function() {
   var title = $('#template_title_input').val();
   var content = $('#template_content_input').val();
   var templateDependencies = {
-    'bg.jpg': 'imgs/phone_purple.jpg',
     'normalize.css': 'bower_components/bower-foundation5/css/normalize.css'
     //'foundation.css': 'bower_components/bower-foundation5/css/foundation.css'
   };
@@ -180,6 +263,9 @@ var publishTemplate = function() {
 
     // Save the template in the temp Directory
     var templateString = fs.readFileSync(path.resolve(appSrcFolderPath, 'views/template.html')).toString();
+    var backgroundImage = getTemplateBackgroundFile();
+    templateDependencies[backgroundImage.name] = backgroundImage.path;
+    templateString = templateString.replace(/BG_IMG/g, backgroundImage.name);
     fs.writeFileSync(path.resolve(tempDirPath, 'index.html'),
         util.format(templateString.replace(/SAFE_SERVICE/g, serviceName).replace(/SAFE_PUBLIC/g, publicName), title, content));
     // Save the template dependencies
@@ -205,19 +291,16 @@ var toggleDisplay = function(elementIdToHide, elementIdToShow) {
   $('#' + elementIdToShow).removeClass('hide');
 };
 
-$('#template_title_input').focusout(function() {
-  toggleDisplay('edit_template_title', 'template_title');
-});
-
 $('#template_title_input').keypress(function(e) {
   if (e.which === 13) {
     toggleDisplay('edit_template_title', 'template_title');
   }
 });
 
-var editTemplateTitle = function() {
+var editTemplateTitle = function(e) {
   toggleDisplay('template_title', 'edit_template_title');
   $('#template_title_input').focus();
+  e.stopPropagation();
 };
 
 var updateTemplateTitle = function(value) {
@@ -241,13 +324,48 @@ var updateTemplateContent = function(value) {
   $('#template_content').html(value);
 };
 
+var updateTemplateContent = function(value) {
+  $('#template_content').html(value);
+};
+
 var resetTemplate = function() {
   $('#template_title').html("My Page");
   $('#template_title_input').val("My Page");
   $('#template_content').html("This page is created and published on the SAFE Network using the SAFE Uploader");
   $('#template_content_input').val("This page is created and published on the SAFE Network using the SAFE Uploader");
+  var element = $('.template_banner');
+  element.css('background', 'url(../imgs/dns_bg.jpg)');
+  element.css('background-size', 'cover');
+  element.css('background-position', 'center');
+};
+
+var onFileSelected = function(filePath) {
+  if (!filePath) {
+    return;
+  }
+  filePath = filePath[0];
+  var mimeType = mime.lookup(path.basename(filePath));
+  tempBackgroundFilePath = filePath;
+  var element = $('.template_banner');
+  element.css('background', 'url(data:' + mimeType +';base64,' + fs.readFileSync(filePath).toString('base64') + ')');
+  element.css('background-size', 'cover');
+  element.css('background-position', 'center');
+};
+
+var pickFile = function() {
+  if($('#template_title').hasClass('hide')) {
+    toggleDisplay('edit_template_title', 'template_title');
+    return;
+  }
+  dialog.showOpenDialog({
+    title: 'Select Image',
+    filters: [
+      { name: 'Images', extensions: ['jpg', 'png'] },
+    ]
+  }, onFileSelected)
 };
 
 /*****  Initialisation ***********/
+AppNavigator.init('step-1');
 registerDragRegion('drag_drop');
 $('#service_name').focus();

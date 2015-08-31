@@ -1,50 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Safe Network Uploader</title>
+    <title>MaidSafe</title>
     <link rel="stylesheet" href="../bower_components/bower-foundation5/css/normalize.css"/>
     <link rel="stylesheet" href="../bower_components/bower-foundation5/css/foundation.min.css"/>
     <link rel="stylesheet" href="../bower_components/open-sans-fontface/open-sans.css"/>
     <link rel="stylesheet" href="../styles/main.css"/>
 </head>
 <body>
-<!--<header>-->
-    <!--<div class="row-full">-->
-        <!--<div class="column medium-3 title">-->
-            <!--SAFE Network Uploader-->
-        <!--</div>-->
-        <!--<div class="column medium-2 no-pad">-->
-            <!--<ul>-->
-                <!--<li onclick="minimise()">-</li>-->
-                <!--<li onclick="maximise()">&#x25a1</li>-->
-                <!--<li onclick="closeApp()">&nbsp;X&nbsp;</li>-->
-            <!--</ul>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</header>-->
+<nav class="row-full">
+    <div class="back column medium-1" onclick="goBack()">
+        <img src="../imgs/arrow.png">
+    </div>
+    <div class="title column medium-10 medium-centered end text-center">
+        Safe:www.maidsafe
+    </div>
+    <div class="publish column medium-1 text-center" onclick="publishTemplate()">
+        PUBLISH
+    </div>
+</nav>
 <section id="step-1">
     <div class="row-full centered-layout">
         <div class="row">
             <div class="column medium-9 medium-centered text-center">
-                <p class="header">Enter your Service and Public Name to get started</p>
-                <p class="description">Service name can be www, blog, etc. followed by the public name. Eg, safe:www.maidsafe</p>
+                <p class="header">Get Started!</p>
+                <p class="description">Choose a Service and Public name</p>
                 <div id="registration" class="row">
-                    <div class="column medium-9 medium-centered">
+                    <div class="column medium-6 medium-centered margin-25-vertical">
                         <div class="column medium-2">
                             <span class="scheme">safe:</span>
                         </div>
                         <div class="column medium-4 no-pad">
-                            <input type="text" id="service_name" placeholder="www" required="true"/>
+                            <input type="text" id="service_name" placeholder="service" required="true"/>
                         </div>
                         <div class="column medium-6 no-pad">
                             <span class="dot">.</span>
-                            <input type="text" id="public_name" placeholder="maidsafe" required="true"/>
+                            <input type="text" id="public_name" placeholder="domain" required="true"/>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="column medium-6 medium-centered">
-                        <button onclick="validateInput()">Upload Files</button>
+                        <button onclick="validateInput()">Done</button>
                     </div>
                 </div>
             </div>
@@ -53,17 +50,22 @@
 </section>
 <section id="step-2" class="hide">
     <div class="row-full centered-layout">
-        <div class="column medium-5 text-center">
-            <div class="row">
-                <div class="column medium-12 text-center">
-                    <p class="header">Drag your files here to Upload</p>
-                </div>
+        <div class="row-full">
+            <div class="column medium-12 text-center">
+                <p class="header">Time to Add some files!</p>
             </div>
-            <div class="row">
-                <div class="column medium-7 large-6 medium-centered text-center">
-                    <div id="drag_drop" >
-                        <div class="outer-circle">
-                            <div class="inner-circle">
+        </div>
+        <div class=" row-full">
+            <div class="column medium-10 medium-centered">
+                <div class="column medium-5 text-center ">
+                    <div class="row">
+                        <div class="column medium-12 text-center margin-top-50">
+                            <p class="description">Drag a folder or your HTML/Website files to upload</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column medium-4 large-2 medium-centered text-center">
+                            <div id="drag_drop" >
                                 <div class="holder">
                                     <img alt="" />
                                 </div>
@@ -71,16 +73,16 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="column medium-2 text-center">
-            <p class="header">Or</p>
-        </div>
-        <div class="column medium-5">
-            <div class="row">
-                <div class="column medium-12 text-center">
-                    <p class="header">Use a template to create a Site</p>
-                    <button class="btn_template" onclick="showSection('template')">Use Template</button>
+                <div class="column medium-2 text-center">
+                    <p class="header margin-top-110">OR</p>
+                </div>
+                <div class="column medium-5">
+                    <div class="row">
+                        <div class="column medium-12 text-center margin-top-50">
+                            <p class="description">Use our template to create a simple example site</p>
+                            <button class="btn_template" onclick="showSection('template')">Use Template</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,8 +117,8 @@
     </div>
 </section>
 <section id="template" class="hide">
-    <div class="row-full template_banner">
-        <p id="template_title" onclick="editTemplateTitle()">
+    <div class="row-full template_banner" onclick="pickFile()">
+        <p id="template_title" onclick="editTemplateTitle(event)">
             My Page
         </p>
         <div id="edit_template_title" class="column medium-centered medium-4 hide">
@@ -133,10 +135,6 @@
                    onchange="updateTemplateContent(this.value)"/>
         </div>
     </div>
-    <div class="template_footer">
-        <div onclick="resetTemplate();showSection('step-1');">START OVER</div>
-        <div onclick="publishTemplate()">PUBLISH</div>
-    </div>
 </section>
 <section id="success" class="hide">
     <div class="row-full centered-layout">
@@ -144,7 +142,7 @@
             <div class="column medium-10 medium-centered text-center">
                 <div class="row">
                     <div class="row text-center">
-                        <p id="success_msg" class="header"></p>
+                        <p class="header">Files Uploaded!</p>
                     </div>
                     <div class="row">
                         <div class="column medium-2 medium-centered text-center">
@@ -153,7 +151,7 @@
                     </div>
                     <div class="row">
                         <div class="column medium-12 medium-centered text-center">
-                            <p class="margin-25-vertical">Drag more files to upload again</p>
+                            <p id="success_msg" class="no-pad no-margin">Drag more files to upload again</p>
                             <button onclick="showSection('step-1')">Start Over</button>
                         </div>
                     </div>
@@ -168,7 +166,7 @@
             <div class="column medium-10 medium-centered text-center">
                 <div class="row">
                     <div class="row text-center">
-                        <p id="error_msg" class="header">Oops, Something went wrong!</p>
+                        <p class="header">Oops, Something went wrong!</p>
                     </div>
                     <div class="row">
                         <div class="column medium-2 medium-centered text-center">
@@ -177,7 +175,7 @@
                     </div>
                     <div class="row">
                         <div class="column medium-12 medium-centered text-center">
-                            <p class="margin-25-vertical">Try to upload again</p>
+                            <p id="error_msg" class="no-pad no-margin">Try to upload again</p>
                             <button onclick="showSection('step-1')">Start Over</button>
                         </div>
                     </div>

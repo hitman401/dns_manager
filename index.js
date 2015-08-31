@@ -14,12 +14,12 @@ var srcFolder = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.
 
 function createMainWindow () {
 	const win = new BrowserWindow({
-		width: 1000,
-		height: 600,
+		width: 1024,
+		height: 640,
 		center: true,
 		resizable: true,
-		'min-width': 1000,
-		'min-height': 600,
+		'min-width': 1020,
+		'min-height': 640,
 		icon: srcFolder + '/imgs/logo.png'
 	});
 
@@ -52,5 +52,5 @@ app.on('activate-with-no-open-windows', function () {
 
 app.on('ready', function () {
 	mainWindow = createMainWindow();
-	//mainWindow.openDevTools();
+	mainWindow.openDevTools();
 });

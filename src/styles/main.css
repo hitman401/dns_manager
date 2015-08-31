@@ -214,6 +214,6 @@ div.holder:hover > img {
     font-size: 25px;
     text-align: center;
 }
-nav div.back:hover, nav div.publish:hover, .template_banner p:hover, .template_footer div:hover, .template_content p {
+nav div.back:hover, nav div.publish:hover, .template_banner:hover , .template_footer div:hover, .template_content p {
     cursor: pointer;
 }

@@ -1,13 +1,18 @@
 // Electron UI Variable initialization
 var remote = require('remote');
 var Menu = remote.require('menu');
-var shell = require('shell');
+var shell = remote.require('shell');
+var dialog = remote.require('dialog');
+
 // Nodejs and Application Variable initialization
 var path = require('path');
+var mime = require('mime');
+var fs = require('fs');
 var appSrcFolderPath = (__dirname.indexOf('asar') === -1) ? path.resolve('src') : path.resolve(__dirname, '../../src/');
 var Uploader = require('../scripts/uploader');
 var serviceName;
 var publicName;
+var tempBackgroundFilePath;
 // Registering Jquery - Electron Way
 window.$ = window.jQuery = require('../scripts/jquery.js');
 // Disable Menu bar
@@ -19,6 +24,16 @@ var AppNavigator = {
   states: {
     'step-2': 'step-1',
     'template': 'step-2'
+  },
+  onBack: {
+    'template': function() {
+      resetTemplate()
+    }
+  },
+  onLoad: {
+    'template': function() {
+      resetTemplate()
+    }
   },
   visibleOn: ['step-2', 'template'],
   showPublish: ['template'],
@@ -40,8 +55,14 @@ var AppNavigator = {
       this.ui.publishElement.hide();
     }
     this.ui.nav.show();
+    if (this.onLoad[this.current]) {
+      this.onLoad[this.current]();
+    }
   },
   back: function() {
+    if (this.onBack[this.current]) {
+      this.onBack[this.current]();
+    }
     showSection(this.states[this.current]);
   },
   init: function(initialState) {
@@ -58,7 +79,6 @@ var goBack = function() {
 };
 
 var openExternal = function(url) {
-  debugger
   shell.openExternal(url);
 };
 
@@ -206,6 +226,17 @@ var registerDragRegion = function(id) {
   };
 };
 
+var getTemplateBackgroundFile = function() {
+  var backgroundFile;
+  if (tempBackgroundFilePath) {
+    backgroundFile = { 'name' : path.basename(tempBackgroundFilePath), 'path': tempBackgroundFilePath };
+  } else {
+    backgroundFile = { 'name': 'bg.jpg', 'path': 'imgs/dns_bg.jpg'};
+  }
+  tempBackgroundFilePath = '';
+  return backgroundFile;
+};
+
 /**
  * The template is generated from the `/views/template` by replacing the the edited title and description.
  * The dependencies for the page such as normalize.css and bg.jpg are copied along with the genarted template to a temp Directory.
@@ -220,7 +251,6 @@ var publishTemplate = function() {
   var title = $('#template_title_input').val();
   var content = $('#template_content_input').val();
   var templateDependencies = {
-    'bg.jpg': 'imgs/dns_bg.jpg',
     'normalize.css': 'bower_components/bower-foundation5/css/normalize.css'
     //'foundation.css': 'bower_components/bower-foundation5/css/foundation.css'
   };
@@ -230,6 +260,9 @@ var publishTemplate = function() {
 
     // Save the template in the temp Directory
     var templateString = fs.readFileSync(path.resolve(appSrcFolderPath, 'views/template.html')).toString();
+    var backgroundImage = getTemplateBackgroundFile();
+    templateDependencies[backgroundImage.name] = backgroundImage.path;
+    templateString = templateString.replace(/BG_IMG/g, backgroundImage.name);
     fs.writeFileSync(path.resolve(tempDirPath, 'index.html'),
         util.format(templateString.replace(/SAFE_SERVICE/g, serviceName).replace(/SAFE_PUBLIC/g, publicName), title, content));
     // Save the template dependencies
@@ -255,19 +288,16 @@ var toggleDisplay = function(elementIdToHide, elementIdToShow) {
   $('#' + elementIdToShow).removeClass('hide');
 };
 
-$('#template_title_input').focusout(function() {
-  toggleDisplay('edit_template_title', 'template_title');
-});
-
 $('#template_title_input').keypress(function(e) {
   if (e.which === 13) {
     toggleDisplay('edit_template_title', 'template_title');
   }
 });
 
-var editTemplateTitle = function() {
+var editTemplateTitle = function(e) {
   toggleDisplay('template_title', 'edit_template_title');
   $('#template_title_input').focus();
+  e.stopPropagation();
 };
 
 var updateTemplateTitle = function(value) {
@@ -291,13 +321,44 @@ var updateTemplateContent = function(value) {
   $('#template_content').html(value);
 };
 
+var updateTemplateContent = function(value) {
+  $('#template_content').html(value);
+};
+
 var resetTemplate = function() {
   $('#template_title').html("My Page");
   $('#template_title_input').val("My Page");
   $('#template_content').html("This page is created and published on the SAFE Network using the SAFE Uploader");
   $('#template_content_input').val("This page is created and published on the SAFE Network using the SAFE Uploader");
+  var element = $('.template_banner');
+  element.css('background', 'url(../imgs/dns_bg.jpg)');
+  element.css('background-size', 'cover');
 };
 
+var onFileSelected = function(filePath) {
+  if (!filePath) {
+    return;
+  }
+  filePath = filePath[0];
+  var mimeType = mime.lookup(path.basename(filePath));
+  tempBackgroundFilePath = filePath;
+  var element = $('.template_banner');
+  element.css('background', 'url(data:' + mimeType +';base64,' + fs.readFileSync(filePath).toString('base64') + ')');
+  element.css('background-size', 'cover');
+};
+
+var pickFile = function() {
+  if($('#template_title').hasClass('hide')) {
+    toggleDisplay('edit_template_title', 'template_title');
+    return;
+  }
+  dialog.showOpenDialog({
+    title: 'Select Image',
+    filters: [
+      { name: 'Images', extensions: ['jpg', 'png'] },
+    ]
+  }, onFileSelected)
+};
 
 /*****  Initialisation ***********/
 AppNavigator.init('step-1');
